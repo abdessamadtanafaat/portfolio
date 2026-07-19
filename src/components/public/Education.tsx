@@ -4,11 +4,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { GraduationCap, Award, MapPin, Calendar } from "lucide-react";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Education, Certificate, HomepageContent } from "@/lib/queries/portfolio";
 import { formatEducationDate, tsToYear } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface EducationProps {
   education: Education[];
@@ -19,30 +19,16 @@ interface EducationProps {
 export function Education({ education, certificates, homepage }: EducationProps) {
   const { t, locale } = useTranslations();
   return (
-    <section id="education" className="relative py-24 md:py-32">
-      <HeroOrbs />
-      <div className="absolute inset-0 mesh-gradient opacity-20" />
-      <div className="noise-overlay" />
-      <GradientOrbs />
+    <SectionShell id="education" variant="default" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.educationBadge || t("education.badge")}
+        title={homepage?.educationTitle || t("education.title")}
+        subtitle={homepage?.educationDescription || t("education.description")}
+      />
 
-      <div className="relative mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.educationBadge || t("education.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.educationTitle || t("education.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.educationDescription || t("education.description")}
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
           <ScrollReveal delay={0.1} direction="left">
-            <div className="glass-card p-6 sm:p-7 h-full">
+            <div className="glass-card p-6 sm:p-7 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 shadow-lg shadow-violet-500/25">
                   <GraduationCap className="h-6 w-6 text-white" />
@@ -86,7 +72,7 @@ export function Education({ education, certificates, homepage }: EducationProps)
           </ScrollReveal>
 
           <ScrollReveal delay={0.2} direction="right">
-            <div className="glass-card p-6 sm:p-7 h-full">
+            <div className="glass-card p-6 sm:p-7 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
                   <Award className="h-6 w-6 text-white" />
@@ -124,7 +110,6 @@ export function Education({ education, certificates, homepage }: EducationProps)
             </div>
           </ScrollReveal>
         </div>
-      </div>
-    </section>
+    </SectionShell>
   );
 }

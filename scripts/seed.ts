@@ -481,7 +481,7 @@ async function seed() {
   }> = {
     "ugb-institutional-site": { category: "cms", status: "production", featured: true, startDate: "2025-02-01", endDate: "2025-06-30", repoUrl: null },
     "back-office-multi-tenant": { category: "fullstack", status: "production", featured: true, startDate: "2024-02-01", endDate: "2024-07-31", repoUrl: null },
-    "hr-application": { category: "fullstack", status: "production", featured: false, startDate: "2023-07-01", endDate: "2023-08-31", repoUrl: null },
+    "hr-application": { category: "fullstack", status: "production", featured: true, startDate: "2023-07-01", endDate: "2023-08-31", repoUrl: null },
     "hse-serious-game": { category: "fullstack", status: "production", featured: false, startDate: "2024-07-01", endDate: "2024-08-31", repoUrl: null },
     "notify-messaging": { category: "fullstack", status: "production", featured: false, startDate: "2024-01-01", endDate: null, repoUrl: null },
     "edupresence": { category: "mobile", status: "production", featured: false, startDate: "2023-06-01", endDate: null, repoUrl: "https://github.com/abdessamadtanafaat/Attendance_Student_Management" },

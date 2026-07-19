@@ -5,11 +5,11 @@ import { Users } from "lucide-react";
 import { getIconComponent } from "@/components/admin/editors/IconPicker";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import { formatExperienceDate } from "@/lib/queries/portfolio";
 import type { VolunteeringEntry, HomepageContent } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface VolunteeringProps {
   entries: VolunteeringEntry[];
@@ -31,27 +31,16 @@ export function Volunteering({ entries, homepage }: VolunteeringProps) {
   if (entries.length === 0) return null;
 
   return (
-    <section id="volunteering" className="section-padding relative mesh-gradient">
-      <HeroOrbs />
-      <GradientOrbs />
-      <div className="mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.volunteeringBadge || t("volunteering.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.volunteeringTitle || t("volunteering.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.volunteeringDescription || t("volunteering.description")}
-            </p>
-          </div>
-        </ScrollReveal>
+    <SectionShell id="volunteering" variant="muted" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.volunteeringBadge || t("volunteering.badge")}
+        title={homepage?.volunteeringTitle || t("volunteering.title")}
+        subtitle={homepage?.volunteeringDescription || t("volunteering.description")}
+      />
 
-        <div className="relative">
-          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-500/60 via-brand-400/40 to-transparent" />
-          <div className="space-y-10">
+      <div className="relative">
+        <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-500/60 via-brand-400/40 to-transparent" />
+        <div className="space-y-10">
             {entries.map((entry, index) => {
               const IconComp = entry.icon ? getIconComponent(entry.icon) : Users;
               const colors = colorMap[entry.color || "brand"] || colorMap.brand;
@@ -59,10 +48,10 @@ export function Volunteering({ entries, homepage }: VolunteeringProps) {
 
               return (
                 <ScrollReveal key={entry.id} delay={index * 0.1} direction="left">
-                  <div className="relative pl-20">
-                    <div className="absolute left-[6px] top-3 w-4 h-4 rounded-full bg-brand-500 border-[3px] border-white dark:border-slate-950 shadow-sm shadow-brand-500/30" />
-                    <TiltCard tiltAmount={4} glareEnabled={false}>
-                      <div className="glass-card p-6 sm:p-7">
+                  <div className="relative pl-20 group">
+                    <div className="absolute left-[6px] top-3 w-4 h-4 rounded-full bg-brand-500 border-[3px] border-white dark:border-slate-950 shadow-sm shadow-brand-500/30 transition-transform duration-300 group-hover:scale-125" />
+                    <TiltCard tiltAmount={4} glareEnabled={false} className="h-full">
+                      <div className="glass-card p-6 sm:p-7 group hover:border-brand-300/70 dark:hover:border-brand-700/60 hover:shadow-brand-500/10 transition-all duration-300">
                         <div className="flex items-start gap-4">
                           <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${colors.bg} flex-shrink-0`}>
                             <IconComp className={`h-5 w-5 ${colors.icon}`} />
@@ -96,7 +85,6 @@ export function Volunteering({ entries, homepage }: VolunteeringProps) {
             })}
           </div>
         </div>
-      </div>
-    </section>
+    </SectionShell>
   );
 }

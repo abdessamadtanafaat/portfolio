@@ -40,8 +40,8 @@ export function Footer({ personal, socialLinks: dbSocialLinks, technologies, hom
   const techTitle = homepage?.footerTechTitle || t("footer.technologies");
 
   return (
-    <footer className="border-t border-slate-200/80 dark:border-white/[0.06] bg-slate-50/50 dark:bg-[#08080c]">
-      <div className="mx-auto max-w-6xl container-px py-16 lg:py-20">
+    <footer className="relative overflow-hidden border-t border-slate-200/80 dark:border-white/[0.06] bg-slate-50 dark:bg-[#0a0a0f]">
+      <div className="relative mx-auto max-w-6xl container-px py-16 lg:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -129,7 +129,7 @@ export function Footer({ personal, socialLinks: dbSocialLinks, technologies, hom
         </div>
       </div>
 
-      <div className="border-t border-slate-200/80 dark:border-slate-800/80">
+      <div className="relative border-t border-slate-200/80 dark:border-slate-800/80">
         <div className="mx-auto max-w-6xl container-px py-6">
           <p className="text-center text-xs text-slate-400 dark:text-slate-500">
             &copy; {new Date().getFullYear()} {personal?.name || "Abdessamad Tanafaat"}. {homepage?.footerCopyright || t("footer.copyright")}

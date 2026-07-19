@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { SPRING } from "@/lib/motion";
 
 interface TiltCardProps {
   children: React.ReactNode;
@@ -12,11 +13,12 @@ interface TiltCardProps {
 
 export function TiltCard({ children, className = "", tiltAmount = 8, glareEnabled = true }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (reduce || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
@@ -29,7 +31,7 @@ export function TiltCard({ children, className = "", tiltAmount = 8, glareEnable
     setGlare({
       x: x * 100,
       y: y * 100,
-      opacity: 0.15,
+      opacity: 0.18,
     });
   };
 
@@ -37,6 +39,10 @@ export function TiltCard({ children, className = "", tiltAmount = 8, glareEnable
     setTilt({ x: 0, y: 0 });
     setGlare({ x: 50, y: 50, opacity: 0 });
   };
+
+  if (reduce) {
+    return <div className={`perspective-1000 ${className}`}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -48,8 +54,8 @@ export function TiltCard({ children, className = "", tiltAmount = 8, glareEnable
         rotateX: tilt.x,
         rotateY: tilt.y,
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      style={{ transformStyle: "preserve-3d" }}
+      transition={SPRING.gentle}
+      style={{ transformStyle: "preserve-3d", willChange: "transform" }}
     >
       <div className="relative backface-hidden">
         {children}

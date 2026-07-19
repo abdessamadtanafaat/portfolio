@@ -31,31 +31,43 @@
 
   html {
     scroll-behavior: smooth;
+    /* offset anchored scroll so the fixed navbar doesn't cover section titles */
+    scroll-padding-top: 5rem;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
   }
+
+  /* Accessible, branded focus ring used across the whole app */
+  :focus-visible {
+    outline: 2px solid theme("colors.brand.500");
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
 }
 
 @layer components {
+  /* ---- DESIGN TOKENS (centralized, reused everywhere) ---- */
   .container-px {
     @apply px-4 sm:px-6 lg:px-8;
   }
 
+  /* Single vertical rhythm for every section */
   .section-padding {
-    @apply py-16 sm:py-20 lg:py-24;
+    @apply py-20 sm:py-24 lg:py-28;
   }
 
+  /* Clean, premium card surface shared by every section (Apple / Linear / Vercel style) */
   .glass-card {
-    @apply relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-xl;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06);
+    @apply relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04), 0 4px 16px -4px rgba(15, 23, 42, 0.06);
   }
 
   .dark .glass-card {
-    @apply border-white/[0.08] bg-white/[0.03];
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+    @apply border-white/[0.06] bg-white/[0.02];
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.4);
   }
 
   .glass-card-hover {
@@ -63,38 +75,98 @@
   }
 
   .glass-card-hover:hover {
-    @apply border-slate-300/80 bg-white/90;
-    box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.1);
+    @apply border-slate-300 bg-white;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05), 0 12px 32px -8px rgba(15, 23, 42, 0.1);
     transform: translateY(-2px);
   }
 
   .dark .glass-card-hover:hover {
-    @apply border-white/[0.12] bg-white/[0.06];
-    box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.2);
+    @apply border-white/[0.12] bg-white/[0.04];
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4), 0 16px 40px -10px rgba(0, 0, 0, 0.5);
   }
 
   .card-hover {
     @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
   }
 
+  /* Clean alternating section surfaces — no colored gradients.
+     Separation is achieved through spacing + a whisper of neutral tone. */
+  .section-surface {
+    background-color: transparent;
+  }
+
+  .section-surface-muted {
+    @apply bg-slate-50/80;
+  }
+
+  .dark .section-surface-muted {
+    background-color: rgba(255, 255, 255, 0.015);
+  }
+
+  /* Subtle top divider to mark the transition into a new section */
+  .section-divider {
+    @apply relative;
+  }
+
+  .section-divider::before {
+    content: "";
+    @apply absolute top-0 left-1/2 -translate-x-1/2 h-px w-24 rounded-full;
+    background: linear-gradient(90deg, transparent, rgba(237, 129, 22, 0.35), transparent);
+  }
+
+  .dark .section-divider::before {
+    background: linear-gradient(90deg, transparent, rgba(237, 129, 22, 0.25), transparent);
+  }
+
+  /* Ambient brand background — kept ONLY for the Hero section. */
   .mesh-gradient {
     @apply pointer-events-none;
-    background: 
-      radial-gradient(ellipse at 20% 50%, rgba(237, 129, 22, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(237, 129, 22, 0.10) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, rgba(237, 129, 22, 0.07) 0%, transparent 50%);
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(237, 129, 22, 0.12) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 15%, rgba(139, 92, 246, 0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 100%, rgba(237, 129, 22, 0.08) 0%, transparent 50%);
   }
 
   .dark .mesh-gradient {
-    background: 
-      radial-gradient(ellipse at 20% 50%, rgba(237, 129, 22, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(237, 129, 22, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, rgba(237, 129, 22, 0.05) 0%, transparent 50%);
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(237, 129, 22, 0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 15%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 100%, rgba(237, 129, 22, 0.06) 0%, transparent 50%);
   }
 
   .noise-overlay {
     @apply pointer-events-none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ---- SECTION HEADER PATTERN (shared by every section) ---- */
+  .section-header {
+    @apply text-center mb-12 sm:mb-16;
+  }
+
+  .section-eyebrow {
+    @apply inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30;
+  }
+
+  .section-title {
+    @apply text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed;
+  }
+
+  /* Standardized badge / chip / pill tokens */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full;
+  }
+
+  .chip {
+    @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700;
+  }
+
+  .dark .chip {
+    @apply bg-slate-800 text-slate-300;
   }
 
   .gradient-text {

@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Zap } from "lucide-react";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { HomepageContent, Differentiator } from "@/lib/queries/portfolio";
 import { parseJsonObject } from "@/lib/queries/portfolio";
 import { useTranslations, type TranslationKey } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 const iconMap: Record<string, React.ElementType> = {
   Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Zap,
@@ -50,34 +50,23 @@ export function About({ homepage, differentiators }: AboutProps) {
   const aboutCards = parseJsonObject<AboutCard[]>(homepage?.aboutCards ?? null) || defaultCards;
 
   return (
-    <section id="about" className="section-padding relative">
-      <HeroOrbs />
-      <GradientOrbs />
-      <div className="mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.aboutBadge || t("about.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.aboutTitle || t("about.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.aboutDescription || t("about.description")}
-            </p>
-          </div>
-        </ScrollReveal>
+    <SectionShell id="about" variant="default">
+      <SectionHeader
+        eyebrow={homepage?.aboutBadge || t("about.badge")}
+        title={homepage?.aboutTitle || t("about.title")}
+        subtitle={homepage?.aboutDescription || t("about.description")}
+      />
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <ScrollReveal stagger className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {aboutCards.map((card, index) => {
             const IconComp = iconMap[card.icon] || Code;
             const cardColor = card.color || "text-brand-600 dark:text-brand-400";
             const cardBg = card.bg || "bg-brand-50 dark:bg-brand-900/30";
             const colorKey = cardColor.includes("brand") ? "brand" : cardColor.includes("emerald") ? "emerald" : "violet";
             return (
-              <ScrollReveal key={card.title} delay={index * 0.1}>
-                <TiltCard tiltAmount={6}>
-                  <div className="glass-card p-6 sm:p-8 text-center h-full">
+              <ScrollReveal key={card.title} as="div">
+                <TiltCard tiltAmount={6} className="h-full">
+                  <div className="glass-card p-6 sm:p-8 text-center h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 hover:shadow-brand-500/10 transition-all duration-300">
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -92,7 +81,7 @@ export function About({ homepage, differentiators }: AboutProps) {
               </ScrollReveal>
             );
           })}
-        </div>
+      </ScrollReveal>
 
         {differentiators.length > 0 && (
           <div className="mt-16">
@@ -101,14 +90,14 @@ export function About({ homepage, differentiators }: AboutProps) {
                 {homepage?.differentiatorsTitle || t("about.differentiatorsTitle")}
               </h3>
             </ScrollReveal>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <ScrollReveal stagger className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
               {differentiators.map((diff, index) => {
                 const IconComp = iconMap[diff.icon] || Award;
                 const colors = colorMap[diff.color || "brand"] || colorMap.brand;
                 return (
-                  <ScrollReveal key={diff.id} delay={index * 0.08}>
-                    <TiltCard tiltAmount={4} glareEnabled={false}>
-                      <div className="glass-card p-5 h-full">
+                  <ScrollReveal key={diff.id} as="div">
+                    <TiltCard tiltAmount={4} glareEnabled={false} className="h-full">
+                      <div className="glass-card p-5 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 hover:shadow-brand-500/10 transition-all duration-300">
                         <motion.div
                           whileHover={{ scale: 1.1 }}
                           transition={{ type: "spring", stiffness: 400, damping: 20 }}
@@ -123,10 +112,9 @@ export function About({ homepage, differentiators }: AboutProps) {
                   </ScrollReveal>
                 );
               })}
-            </div>
+      </ScrollReveal>
           </div>
         )}
-      </div>
-    </section>
+    </SectionShell>
   );
 }

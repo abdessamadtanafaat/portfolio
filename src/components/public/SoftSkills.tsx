@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { getIconComponent } from "@/components/admin/editors/IconPicker";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { SoftSkill, HomepageContent } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface SoftSkillsProps {
   skills: SoftSkill[];
@@ -28,23 +28,12 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
     .sort((a, b) => a.orderIndex - b.orderIndex);
 
   return (
-    <section id="softskills" className="section-padding relative mesh-gradient">
-      <HeroOrbs />
-      <GradientOrbs />
-      <div className="mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.softSkillsBadge || t("softSkills.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.softSkillsTitle || t("softSkills.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.softSkillsDescription || t("softSkills.description")}
-            </p>
-          </div>
-        </ScrollReveal>
+    <SectionShell id="softskills" variant="default" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.softSkillsBadge || t("softSkills.badge")}
+        title={homepage?.softSkillsTitle || t("softSkills.title")}
+        subtitle={homepage?.softSkillsDescription || t("softSkills.description")}
+      />
 
         {softSkills.length > 0 && (
           <ScrollReveal delay={0.1}>
@@ -60,8 +49,9 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.04, ease: [0.21, 0.47, 0.32, 0.98] }}
-                    className="glass-card inline-flex items-center gap-2 px-4 py-2.5 rounded-full"
+                    whileHover={{ scale: 1.06, y: -2 }}
+                    transition={{ duration: 0.3, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                    className="glass-card inline-flex items-center gap-2 px-4 py-2.5 rounded-full hover:border-brand-300/70 dark:hover:border-brand-700/60 hover:shadow-brand-500/10"
                   >
                     <IconComp className="h-4 w-4 text-brand-600 dark:text-brand-400" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -88,8 +78,9 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.04, ease: [0.21, 0.47, 0.32, 0.98] }}
-                    className="glass-card inline-flex items-center gap-2 px-4 py-2.5 rounded-full"
+                    whileHover={{ scale: 1.06, y: -2 }}
+                    transition={{ duration: 0.3, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                    className="glass-card inline-flex items-center gap-2 px-4 py-2.5 rounded-full hover:border-violet-300/70 dark:hover:border-violet-700/60 hover:shadow-violet-500/10"
                   >
                     <IconComp className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -101,7 +92,6 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
             </div>
           </ScrollReveal>
         )}
-      </div>
-    </section>
+    </SectionShell>
   );
 }

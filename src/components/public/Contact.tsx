@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { Mail, Phone, Send, Loader2, CheckCircle, AlertCircle, MapPin } from "lucide-react";
 import { Linkedin, Github } from "@/components/icons";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { PersonalInfo, SocialLink, HomepageContent, FormField, FormSettings } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface ContactProps {
   personal: PersonalInfo | null;
@@ -103,30 +103,16 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
   ].filter((item) => item.value);
 
   return (
-    <section id="contact" className="relative py-24 md:py-32">
-      <HeroOrbs />
-      <div className="absolute inset-0 mesh-gradient opacity-20" />
-      <GradientOrbs />
-      <div className="noise-overlay" />
+    <SectionShell id="contact" variant="muted" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.contactBadge || t("contact.badge")}
+        title={homepage?.contactTitle || t("contact.title")}
+        subtitle={homepage?.contactDescription || t("contact.description")}
+      />
 
-      <div className="relative mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.contactBadge || t("contact.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.contactTitle || t("contact.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.contactDescription || t("contact.description")}
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-2">
           <ScrollReveal delay={0.1} direction="left">
-            <div className="glass-card p-6 sm:p-8 h-full">
+            <div className="glass-card p-6 sm:p-8 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 transition-all duration-300">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t("contact.coordinates")}</h3>
               <div className="space-y-4">
                 {contactInfo.map((item, index) => (
@@ -178,7 +164,7 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
           </ScrollReveal>
 
           <ScrollReveal delay={0.2} direction="right">
-            <div className="glass-card p-6 sm:p-8 h-full">
+            <div className="glass-card p-6 sm:p-8 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 transition-all duration-300">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t("contact.sendMessage")}</h3>
 
               {status === "success" && (
@@ -207,9 +193,10 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
                 <motion.button
                   type="submit"
                   disabled={status === "submitting"}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                 >
                   {status === "submitting" ? (
                     <><Loader2 className="h-5 w-5 animate-spin" /><span>{formSettings?.loadingButtonText || t("contact.sending")}</span></>
@@ -221,8 +208,7 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
             </div>
           </ScrollReveal>
         </div>
-      </div>
-    </section>
+    </SectionShell>
   );
 }
 

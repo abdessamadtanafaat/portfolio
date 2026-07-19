@@ -6,10 +6,10 @@ import { Code, Database, Server, Terminal, Layers } from "lucide-react";
 import { Tool } from "@/components/icons";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Skill, HomepageContent, Technology } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface SkillsProps {
   skills: Skill[];
@@ -48,29 +48,18 @@ export function Skills({ skills, homepage, technologies }: SkillsProps) {
   const primaryTechs = technologies.filter((t) => t.primary);
 
   return (
-    <section id="skills" className="section-padding relative mesh-gradient">
-      <HeroOrbs />
-      <GradientOrbs />
-      <div className="mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.skillsBadge || t("skills.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.skillsTitle || t("skills.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.skillsDescription || t("skills.description")}
-            </p>
-          </div>
-        </ScrollReveal>
+    <SectionShell id="skills" variant="muted" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.skillsBadge || t("skills.badge")}
+        title={homepage?.skillsTitle || t("skills.title")}
+        subtitle={homepage?.skillsDescription || t("skills.description")}
+      />
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <ScrollReveal stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {skillCategories.map((category, index) => (
-            <ScrollReveal key={category.key} delay={index * 0.06}>
-              <TiltCard tiltAmount={4} glareEnabled={false}>
-              <div className="glass-card p-6 h-full">
+            <ScrollReveal key={category.key} as="div">
+              <TiltCard tiltAmount={4} glareEnabled={false} className="h-full">
+              <div className="glass-card p-6 h-full group hover:border-brand-300/70 dark:hover:border-brand-700/60 hover:shadow-brand-500/10 transition-all duration-300">
               <div className="flex items-center gap-3 mb-5">
                 <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${category.bg}`}>
                   <category.icon className={`h-5 w-5 ${category.color}`} />
@@ -106,7 +95,7 @@ export function Skills({ skills, homepage, technologies }: SkillsProps) {
               </TiltCard>
             </ScrollReveal>
           ))}
-        </div>
+      </ScrollReveal>
 
         {primaryTechs.length > 0 && (
           <ScrollReveal delay={0.4} className="mt-14">
@@ -120,7 +109,6 @@ export function Skills({ skills, homepage, technologies }: SkillsProps) {
             </div>
           </ScrollReveal>
         )}
-      </div>
-    </section>
+    </SectionShell>
   );
 }

@@ -13,6 +13,7 @@ import { Contact } from "@/components/public/Contact";
 import { CustomSectionBlock } from "@/components/public/CustomSection";
 import { getPortfolioData, getSeoForPage } from "@/lib/queries/portfolio";
 import { locales } from "@/i18n/config";
+import { PageTransition } from "@/components/public/PageTransition";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ export default async function Home({
   const data = await getPortfolioData(locale);
 
   return (
-    <>
+    <PageTransition>
       <Hero
         name={data.personal?.name ?? ""}
         title={data.personal?.title ?? ""}
@@ -86,6 +87,6 @@ export default async function Home({
         <CustomSectionBlock key={section.id} section={section} items={section.items} />
       ))}
       <Contact personal={data.personal} socialLinks={data.socialLinks} homepage={data.homepage} formFields={data.formFields} formSettings={data.formSettings} />
-    </>
+    </PageTransition>
   );
 }

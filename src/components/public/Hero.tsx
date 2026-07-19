@@ -11,6 +11,7 @@ import { GradientOrbs } from "@/components/effects/GradientOrbs";
 import { AuroraBackground } from "@/components/effects/AuroraBackground";
 import { useTranslations } from "@/i18n/useTranslations";
 import { locales } from "@/i18n/config";
+import { MagneticButton } from "@/components/public/MagneticButton";
 import type { HomepageContent } from "@/lib/queries/portfolio";
 
 function withLocale(locale: string, url: string | null | undefined): string | undefined {
@@ -90,18 +91,18 @@ export function Hero({ name, title, tagline, socialLinks, homepage }: HeroProps)
             transition={{ duration: 0.8, delay: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Link
+            <MagneticButton
               href={withLocale(locale, homepage?.heroCtaUrl) || "#contact"}
               className="btn-primary px-8 py-3.5 text-base glow-brand"
             >
               {homepage?.heroCtaText || t("hero.ctaContact")}
-            </Link>
-            <Link
+            </MagneticButton>
+            <MagneticButton
               href={withLocale(locale, homepage?.heroCta2Url) || `/${locale}/projects`}
               className="btn-secondary px-8 py-3.5 text-base"
             >
               {homepage?.heroCta2Text || t("hero.ctaProjects")}
-            </Link>
+            </MagneticButton>
             <a
               href={withLocale(locale, homepage?.heroCta3Url) || `/cv.pdf`}
               className="inline-flex items-center gap-2 rounded-2xl border-2 border-slate-300 dark:border-slate-600 px-6 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200"

@@ -8,9 +8,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { ProjectWithTech, HomepageContent } from "@/lib/queries/portfolio";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 import { useTranslations } from "@/i18n/useTranslations";
 import { locales, defaultLocale } from "@/i18n/config";
 
@@ -51,37 +51,22 @@ export function ProjectsSection({ projects, homepage }: ProjectsSectionProps) {
   const locale = segments[1] && locales.includes(segments[1] as typeof locales[number]) ? segments[1] : defaultLocale;
   const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
   return (
-    <section id="projects" className="relative py-24 md:py-32">
-      <HeroOrbs />
-      <div className="absolute inset-0 mesh-gradient opacity-30" />
-      <div className="noise-overlay" />
-      <GradientOrbs />
+    <SectionShell id="projects" variant="default" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.projectsBadge || t("projects.badge")}
+        title={homepage?.projectsTitle || t("projects.title")}
+        subtitle={homepage?.projectsDescription || t("projects.description")}
+      />
 
-      <div className="relative mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.projectsBadge || t("projects.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.projectsTitle || t("projects.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.projectsDescription || t("projects.description")}
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ScrollReveal stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featuredProjects.map((project, index) => (
-            <TiltCard key={project.slug} className="flex h-full">
-              <motion.article
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.5, delay: 0.1 + index * 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-                className="glass-card card-hover relative flex h-full flex-col p-6"
-              >
+            <ScrollReveal key={project.slug} as="div" className="flex h-full">
+              <TiltCard className="flex h-full w-full">
+                <motion.article
+                  whileHover={{ scale: 1.015 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 26 }}
+                  className="glass-card card-hover group relative flex h-full w-full flex-col p-6"
+                >
                 <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-2xl bg-gradient-to-r ${categoryColors[project.category] || "from-slate-400 to-slate-500"}`} />
 
                 <div className="flex items-center justify-between mb-4">
@@ -123,10 +108,11 @@ export function ProjectsSection({ projects, homepage }: ProjectsSectionProps) {
                     </a>
                   )}
                 </div>
-              </motion.article>
-            </TiltCard>
+                </motion.article>
+              </TiltCard>
+            </ScrollReveal>
           ))}
-        </div>
+      </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
           <div className="mt-12 text-center">
@@ -136,7 +122,6 @@ export function ProjectsSection({ projects, homepage }: ProjectsSectionProps) {
             </Link>
           </div>
         </ScrollReveal>
-      </div>
-    </section>
+    </SectionShell>
   );
 }

@@ -6,11 +6,11 @@ import { Award, Calendar, ExternalLink, CheckCircle, Clock } from "lucide-react"
 import Link from "next/link";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Certificate, HomepageContent } from "@/lib/queries/portfolio";
 import { tsToYear, parseJsonArray } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface CertificatesProps {
   certificates: Certificate[];
@@ -22,37 +22,22 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
   const inProgress = parseJsonArray(homepage?.certificatesInProgress ?? null);
 
   return (
-    <section id="certificates" className="relative py-24 md:py-32">
-      <HeroOrbs />
-      <div className="absolute inset-0 mesh-gradient opacity-25" />
-      <div className="noise-overlay" />
-      <GradientOrbs />
+    <SectionShell id="certificates" variant="muted" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.certificatesBadge || t("certificates.badge")}
+        title={homepage?.certificatesTitle || t("certificates.title")}
+        subtitle={homepage?.certificatesDescription || t("certificates.description")}
+      />
 
-      <div className="relative mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.certificatesBadge || t("certificates.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.certificatesTitle || t("certificates.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.certificatesDescription || t("certificates.description")}
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ScrollReveal stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((cert, index) => (
-            <TiltCard key={cert.name} className="flex h-full">
-              <motion.article
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.4, delay: index * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
-                className="group glass-card card-hover relative flex flex-col h-full p-6 overflow-hidden"
-              >
+            <ScrollReveal key={cert.name} as="div" className="flex h-full">
+              <TiltCard className="flex h-full w-full">
+                <motion.article
+                  whileHover={{ scale: 1.015 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 26 }}
+                  className="group glass-card card-hover relative flex flex-col h-full w-full p-6 overflow-hidden"
+                >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
 
                 <div className="flex items-start gap-4 mb-4">
@@ -81,10 +66,11 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
                     </Link>
                   )}
                 </div>
-              </motion.article>
-            </TiltCard>
+                </motion.article>
+              </TiltCard>
+            </ScrollReveal>
           ))}
-        </div>
+      </ScrollReveal>
 
         {inProgress.length > 0 && (
           <ScrollReveal delay={0.3}>
@@ -107,7 +93,6 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
             </div>
           </ScrollReveal>
         )}
-      </div>
-    </section>
+    </SectionShell>
   );
 }

@@ -6,6 +6,8 @@ import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb
 import type { CustomSection, CustomSectionItem } from "@/lib/queries/portfolio";
 import { parseJsonArray } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface CustomSectionProps {
   section: CustomSection;
@@ -206,32 +208,14 @@ export function CustomSectionBlock({ section, items }: CustomSectionProps) {
   }[section.layout] || CardsLayout;
 
   return (
-    <section id={section.slug} className="section-padding relative">
-      <div className="mx-auto max-w-6xl container-px">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="text-center mb-12"
-        >
-          {section.badge && (
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {section.badge}
-            </span>
-          )}
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-            {section.title}
-          </h2>
-          {section.description && (
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {section.description}
-            </p>
-          )}
-        </motion.div>
+    <SectionShell id={section.slug} variant="default" className="section-divider">
+      <SectionHeader
+        eyebrow={section.badge || undefined}
+        title={section.title}
+        subtitle={section.description || undefined}
+      />
 
-        <Layout items={visibleItems} />
-      </div>
-    </section>
+      <Layout items={visibleItems} />
+    </SectionShell>
   );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useTranslations } from "@/i18n/useTranslations";
 import { LanguageSwitcher } from "@/components/public/LanguageSwitcher";
@@ -70,18 +71,25 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
             const itemHref = item.href.startsWith("/") ? `/${locale}${item.href}` : item.href;
             const isActive = pathname === itemHref || (itemHref !== "/" && itemHref.startsWith("/") && pathname.startsWith(itemHref));
             return (
-              <li key={item.id}>
+               <li key={item.id}>
                 <Link
                   href={itemHref}
                   target={item.target}
                   onClick={() => handleNavClick(itemHref)}
-                  className={`relative px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${
+                  className={`relative px-3 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200 ${
                     isActive
                       ? "text-brand-700 dark:text-brand-300 bg-brand-50/80 dark:bg-brand-900/20"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/[0.04]"
                   }`}
                 >
                   {item.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute inset-0 rounded-lg ring-1 ring-brand-500/30 dark:ring-brand-400/30"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    />
+                  )}
                 </Link>
               </li>
             );

@@ -6,10 +6,10 @@ import { Linkedin } from "@/components/icons";
 import Link from "next/link";
 import { formatExperienceDate, parseJsonArray } from "@/lib/queries/portfolio";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { GradientOrbs } from "@/components/effects/GradientOrbs";
-import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Experience, HomepageContent, SocialLink } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
+import { SectionShell } from "@/components/public/SectionShell";
+import { SectionHeader } from "@/components/public/SectionHeader";
 
 interface ExperienceProps {
   experiences: Experience[];
@@ -22,27 +22,16 @@ export function Experience({ experiences, homepage, socialLinks }: ExperiencePro
   const linkedin = socialLinks.find((l) => l.platform === "linkedin");
 
   return (
-    <section id="experience" className="section-padding relative mesh-gradient">
-      <HeroOrbs />
-      <GradientOrbs />
-      <div className="mx-auto max-w-6xl container-px">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.experienceBadge || t("experience.badge")}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.experienceTitle || t("experience.title")}
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.experienceDescription || t("experience.description")}
-            </p>
-          </div>
-        </ScrollReveal>
+    <SectionShell id="experience" variant="muted" className="section-divider">
+      <SectionHeader
+        eyebrow={homepage?.experienceBadge || t("experience.badge")}
+        title={homepage?.experienceTitle || t("experience.title")}
+        subtitle={homepage?.experienceDescription || t("experience.description")}
+      />
 
-        <div className="relative">
-          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-500/60 via-brand-400/40 to-transparent" />
-          <div className="space-y-10">
+      <div className="relative">
+        <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-500/60 via-brand-400/40 to-transparent" />
+        <div className="space-y-10">
             {experiences.map((exp, index) => (
               <ExperienceCard key={exp.id} exp={exp} index={index} />
             ))}
@@ -63,8 +52,7 @@ export function Experience({ experiences, homepage, socialLinks }: ExperiencePro
             </Link>
           </ScrollReveal>
         )}
-      </div>
-    </section>
+    </SectionShell>
   );
 }
 
@@ -75,9 +63,9 @@ function ExperienceCard({ exp, index }: { exp: Experience; index: number }) {
 
   return (
     <ScrollReveal delay={index * 0.1} direction="left">
-      <div className="relative pl-20">
-        <div className="absolute left-[6px] top-3 w-4 h-4 rounded-full bg-brand-500 border-[3px] border-white dark:border-slate-950 shadow-sm shadow-brand-500/30" />
-        <div className="glass-card p-6 sm:p-7">
+      <div className="relative pl-20 group">
+        <div className="absolute left-[6px] top-3 w-4 h-4 rounded-full bg-brand-500 border-[3px] border-white dark:border-slate-950 shadow-sm shadow-brand-500/30 transition-transform duration-300 group-hover:scale-125" />
+        <div className="glass-card p-6 sm:p-7 group-hover:border-brand-300/70 dark:group-hover:border-brand-700/60 group-hover:shadow-brand-500/10 transition-all duration-300">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
