@@ -171,6 +171,8 @@ npm run db:migrate   # Run pending migrations
 cp local.db local.db.backup
 ```
 
+> `local.db` is a development-only file and is git-ignored (see `.gitignore`). Never commit it — it may contain a seeded admin password hash. If it was previously tracked, untrack it with `git rm --cached local.db`.
+
 ### Production Recommendations
 
 - Use Turso for managed SQLite with replication
@@ -188,7 +190,7 @@ cp local.db local.db.backup
 - **Cookie name:** `admin-session`
 - **Session duration:** 24 hours
 - **Password hashing:** bcryptjs with 12 salt rounds
-- **Protection:** Middleware checks cookie on all `/admin/*` routes (except `/admin/login`)
+- **Protection:** `proxy.ts` (Next 16 locale/routing proxy, the active middleware) + legacy `middleware.ts` cookie check on all `/admin/*` routes (except `/admin/login`)
 - **Rate limiting:** 5 login attempts per 15 minutes per email
 
 ### Admin Access
@@ -387,6 +389,36 @@ pm2 startup
 ### Option 4: Static Export (Limited)
 
 Not recommended — the app requires server-side features (auth, API routes, Server Actions).
+
+---
+
+## Free Services & Estimated Costs
+
+The entire stack can run on free tiers:
+
+| Service | Purpose | Free tier | Cost |
+|---------|---------|-----------|------|
+| **GitHub** | Git hosting, CI | Unlimited public/private repos | $0 |
+| **Vercel** | Next.js hosting, HTTPS, preview deploys | 100 GB bandwidth/mo, serverless functions | $0 (Hobby) |
+| **Turso** | libSQL database | 9 GB storage, 1 B group, daily backups | $0 |
+| **Resend** | Contact emails | 3,000 emails/mo, 100/day | $0 |
+| **Cloudflare** | DNS, HTTPS, optional caching | Full free plan | $0 |
+| **Google Search Console / Bing** | SEO indexing | Free | $0 |
+| **Microsoft Clarity / Plausible / GA4** | Analytics | Free tiers | $0 |
+| **Vercel Blob** | Image uploads (optional) | 1 GB storage, 1 GB transfer | $0 (then paid) |
+
+**Bottom line:** a personal portfolio can be hosted **entirely free**. Only paid upgrades are needed at scale (high traffic, high email volume, large media storage).
+
+---
+
+## SEO Files (sitemap & robots)
+
+The app ships `src/app/sitemap.ts` and `src/app/robots.ts`:
+
+- `sitemap.xml` is generated for every locale (`/en`, `/fr`, `/ar`) + projects.
+- `robots.txt` allows `/` and blocks `/admin` and `/api`.
+
+Both read `NEXTAUTH_URL` as the base URL — **set it to your production domain** so absolute URLs are correct. After deploy, submit `https://your-domain/sitemap.xml` to Google Search Console.
 
 ---
 
