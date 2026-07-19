@@ -6,8 +6,10 @@ import { customSections, customSectionItems } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { asc, eq } from "drizzle-orm";
 
-export async function GET() {
-  const sections = await db.select().from(customSections).orderBy(asc(customSections.orderIndex)).all();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const sections = await db.select().from(customSections).where(eq(customSections.locale, locale)).orderBy(asc(customSections.orderIndex)).all();
   const items = await db.select().from(customSectionItems).all();
   const result = sections.map((s) => ({
     ...s,

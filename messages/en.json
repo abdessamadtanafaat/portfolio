@@ -1,0 +1,164 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "education": "Education",
+    "certificates": "Certificates",
+    "languages": "Languages",
+    "volunteering": "Volunteering",
+    "softSkills": "Soft Skills",
+    "contact": "Contact",
+    "toggleDark": "Switch to dark mode",
+    "toggleLight": "Switch to light mode",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "hero": {
+    "badge": "Available for opportunities",
+    "ctaContact": "Contact Me",
+    "ctaProjects": "View Projects",
+    "ctaCv": "Download CV",
+    "scrollDown": "Scroll down",
+    "defaultTagline": "Full-Stack Engineer specializing in scalable, secure, and high-performance web applications."
+  },
+  "about": {
+    "badge": "Profile",
+    "title": "About Me",
+    "description": "Full-Stack Engineer with 5+ years of experience.",
+    "differentiatorsTitle": "What Sets Me Apart",
+    "cards": {
+      "fullstack": {
+        "title": "Full-Stack Development",
+        "description": "End-to-end web application design and development: architecture, REST/GraphQL API, reactive frontend, CI/CD deployment."
+      },
+      "cms": {
+        "title": "CMS & E-commerce Solutions",
+        "description": "Drupal expertise (7/8/9/10), complex migrations, multisite, headless. Custom e-commerce solutions and ERP/CRM integrations."
+      },
+      "cloud": {
+        "title": "Cloud & DevOps Architecture",
+        "description": "Infrastructure as Code (Terraform), containerization (Docker/K8s), CI/CD (GitLab/GitHub Actions), monitoring, security."
+      }
+    }
+  },
+  "experience": {
+    "badge": "Experience",
+    "title": "Professional Journey",
+    "description": "5+ years of experience building critical applications.",
+    "current": "Current",
+    "viewLinkedin": "View LinkedIn Profile"
+  },
+  "projects": {
+    "badge": "Portfolio",
+    "title": "Key Projects",
+    "description": "Some projects delivered to production, from prototype to industrialization.",
+    "viewAll": "View All Projects",
+    "viewProject": "View Project",
+    "viewOnGithub": "View on GitHub",
+    "all": "All",
+    "noProjects": "No projects in this category."
+  },
+  "skills": {
+    "badge": "Skills",
+    "title": "Tech Stack & Expertise",
+    "description": "Cross-cutting expertise covering the entire software development lifecycle.",
+    "mainTechs": "Key Technologies",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "cms": "CMS / Drupal",
+      "devops": "DevOps / Cloud",
+      "database": "Databases",
+      "tools": "Tools & Methods",
+      "testing": "Testing"
+    }
+  },
+  "education": {
+    "badge": "Education & Certifications",
+    "title": "Education & Certifications",
+    "description": "A solid academic background complemented by recognized certifications.",
+    "degrees": "Degrees",
+    "certifications": "Certifications"
+  },
+  "certificates": {
+    "badge": "Certifications",
+    "title": "Certifications & Training",
+    "description": "Globally recognized certifications validating technical expertise.",
+    "certification": "Certification",
+    "verify": "Verify",
+    "keepLearning": "Staying current with technology"
+  },
+  "languages": {
+    "badge": "Languages",
+    "title": "Language Skills",
+    "description": "Language proficiency and multilingual communication abilities.",
+    "proficiency": "Proficiency"
+  },
+  "volunteering": {
+    "badge": "Volunteering",
+    "title": "Engagement & Volunteering",
+    "description": "My community and volunteer engagement."
+  },
+  "softSkills": {
+    "badge": "Soft Skills & Interests",
+    "title": "Soft Skills & Hobbies",
+    "description": "The human qualities and passions that define me.",
+    "softSkillsTitle": "Soft Skills",
+    "hobbiesTitle": "Interests"
+  },
+  "contact": {
+    "badge": "Contact",
+    "title": "Let's Work Together",
+    "description": "Have a project in mind? Don't hesitate to reach out.",
+    "coordinates": "Contact Info",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "socialMedia": "Social Media",
+    "sendMessage": "Send a Message",
+    "sending": "Sending...",
+    "send": "Send Message",
+    "success": "Message sent successfully! I'll respond as soon as possible.",
+    "error": "An error occurred. Please try again or contact me directly by email.",
+    "validation": {
+      "required": "The field {field} is required",
+      "email": "Invalid email format",
+      "messageMin": "The message must contain at least 20 characters",
+      "nameMin": "The name must contain at least 2 characters",
+      "subjectMin": "The subject must contain at least 5 characters"
+    }
+  },
+  "footer": {
+    "description": "Full-Stack Engineer passionate about creating robust and scalable web applications.",
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "technologies": "Technologies",
+    "copyright": "All rights reserved."
+  },
+  "maintenance": {
+    "title": "Site Under Maintenance",
+    "message": "Our site is currently under maintenance. We'll be back very soon. Thank you for your patience."
+  },
+  "projectsPage": {
+    "badge": "Portfolio",
+    "title": "Projects",
+    "description": "All projects delivered to production, from prototype to industrialization.",
+    "all": "All",
+    "noProjects": "No projects in this category."
+  },
+  "projectDetail": {
+    "backToProjects": "Back to Projects",
+    "details": "Details",
+    "technologies": "Technologies",
+    "liveDemo": "Live Demo",
+    "sourceCode": "Source Code"
+  },
+  "common": {
+    "viewMore": "Learn More",
+    "view": "View",
+    "loading": "Loading..."
+  }
+}

@@ -1,108 +1,58 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
-  direction?: "up" | "down" | "left" | "right" | "none";
-  duration?: number;
+  direction?: "up" | "left" | "right";
+  className?: string;
 }
 
 export function ScrollReveal({
   children,
-  className = "",
   delay = 0,
   direction = "up",
-  duration = 0.6,
+  className = "",
 }: ScrollRevealProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.15 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const directionMap = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { x: 40, y: 0 },
-    right: { x: -40, y: 0 },
-    none: { x: 0, y: 0 },
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const transforms = {
+    up: "translateY(30px)",
+    left: "translateX(-30px)",
+    right: "translateX(30px)",
   };
 
-  const offset = directionMap[direction];
-
   return (
-    <motion.div
+    <div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, ...offset }}
-      animate={isInView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, ...offset }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "none" : transforms[direction],
+        transition: `opacity 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98) ${delay}ms, transform 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98) ${delay}ms`,
       }}
     >
       {children}
-    </motion.div>
-  );
-}
-
-export function StaggerChildren({
-  children,
-  className = "",
-  staggerDelay = 0.08,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  staggerDelay?: number;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
-
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: staggerDelay,
-          },
-        },
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-export function StaggerItem({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <motion.div
-      className={className}
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            duration: 0.5,
-            ease: [0.21, 0.47, 0.32, 0.98],
-          },
-        },
-      }}
-    >
-      {children}
-    </motion.div>
+    </div>
   );
 }

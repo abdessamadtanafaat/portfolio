@@ -6,8 +6,10 @@ import { differentiators } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { asc, eq } from "drizzle-orm";
 
-export async function GET() {
-  const allDifferentiators = await db.select().from(differentiators).orderBy(asc(differentiators.orderIndex));
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const allDifferentiators = await db.select().from(differentiators).where(eq(differentiators.locale, locale)).orderBy(asc(differentiators.orderIndex));
   return NextResponse.json(allDifferentiators);
 }
 

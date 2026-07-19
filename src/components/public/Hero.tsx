@@ -6,7 +6,21 @@ import { ArrowDown, Download, Mail, Phone } from "lucide-react";
 import { Github, Linkedin } from "@/components/icons";
 import Link from "next/link";
 import { HeroOrbs } from "@/components/effects/FloatingOrbs";
+import { ParticleField } from "@/components/effects/ParticleField";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { AuroraBackground } from "@/components/effects/AuroraBackground";
+import { useTranslations } from "@/i18n/useTranslations";
+import { locales } from "@/i18n/config";
 import type { HomepageContent } from "@/lib/queries/portfolio";
+
+function withLocale(locale: string, url: string | null | undefined): string | undefined {
+  if (!url || url.startsWith("#") || url.startsWith("http") || url.startsWith("mailto:") || url.startsWith("tel:")) return url ?? undefined;
+  if (/\.\w{2,4}$/.test(url)) return url;
+  if (url.startsWith("/") && !locales.some((l) => url.startsWith(`/${l}/`) || url === `/${l}`)) {
+    return `/${locale}${url}`;
+  }
+  return url;
+}
 
 interface HeroProps {
   name: string;
@@ -17,16 +31,21 @@ interface HeroProps {
 }
 
 export function Hero({ name, title, tagline, socialLinks, homepage }: HeroProps) {
+  const { t, locale } = useTranslations();
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       <HeroOrbs />
+      <GradientOrbs />
+      <AuroraBackground />
+      <ParticleField />
 
-      <div className="absolute inset-0 mesh-gradient" />
+      <div className="absolute inset-0 mesh-gradient pointer-events-none" />
+      <div className="absolute inset-0 noise-overlay" />
 
-      <div className="relative mx-auto max-w-4xl container-px py-32 lg:py-40">
+      <div className="relative z-10 mx-auto max-w-4xl container-px py-32 lg:py-40">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -62,7 +81,7 @@ export function Hero({ name, title, tagline, socialLinks, homepage }: HeroProps)
             transition={{ duration: 0.8, delay: 0.45, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed mb-12"
           >
-            {tagline || homepage?.heroSubtext || "Ingénieur Full-Stack spécialisé dans les applications web scalables, sécurisées et performantes."}
+            {tagline || homepage?.heroSubtext || t("hero.defaultTagline")}
           </motion.p>
 
           <motion.div
@@ -72,23 +91,23 @@ export function Hero({ name, title, tagline, socialLinks, homepage }: HeroProps)
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
             <Link
-              href={homepage?.heroCtaUrl || "#contact"}
+              href={withLocale(locale, homepage?.heroCtaUrl) || "#contact"}
               className="btn-primary px-8 py-3.5 text-base glow-brand"
             >
-              {homepage?.heroCtaText || "Me contacter"}
+              {homepage?.heroCtaText || t("hero.ctaContact")}
             </Link>
             <Link
-              href={homepage?.heroCta2Url || "/projects"}
+              href={withLocale(locale, homepage?.heroCta2Url) || `/${locale}/projects`}
               className="btn-secondary px-8 py-3.5 text-base"
             >
-              {homepage?.heroCta2Text || "Voir mes projets"}
+              {homepage?.heroCta2Text || t("hero.ctaProjects")}
             </Link>
             <a
-              href={homepage?.heroCta3Url || "#"}
+              href={withLocale(locale, homepage?.heroCta3Url) || `/cv.pdf`}
               className="inline-flex items-center gap-2 rounded-2xl border-2 border-slate-300 dark:border-slate-600 px-6 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200"
             >
               <Download className="h-4 w-4" />
-              {homepage?.heroCta3Text || "Télécharger CV"}
+              {homepage?.heroCta3Text || t("hero.ctaCv")}
             </a>
           </motion.div>
 
@@ -152,7 +171,7 @@ export function Hero({ name, title, tagline, socialLinks, homepage }: HeroProps)
         <a
           href="#about"
           className="inline-flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-          aria-label="Faire défiler vers le bas"
+          aria-label={t("hero.scrollDown")}
         >
           <motion.div
             animate={{ y: [0, 8, 0] }}

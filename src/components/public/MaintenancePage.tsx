@@ -1,12 +1,14 @@
 "use client";
 
 import { Wrench } from "lucide-react";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface MaintenancePageProps {
   message?: string;
 }
 
 export function MaintenancePage({ message }: MaintenancePageProps) {
+  const { t } = useTranslations();
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
       <div className="text-center max-w-md">
@@ -15,9 +17,9 @@ export function MaintenancePage({ message }: MaintenancePageProps) {
             <Wrench className="h-10 w-10" />
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Site en maintenance</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">{t("maintenance.title")}</h1>
         <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-          {message || "Notre site est actuellement en maintenance. Nous serons de retour très bientôt. Merci pour votre patience."}
+          {message || t("maintenance.message")}
         </p>
       </div>
     </div>

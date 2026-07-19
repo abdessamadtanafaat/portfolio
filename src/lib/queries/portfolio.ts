@@ -22,7 +22,7 @@ import {
   volunteering,
   softSkills,
 } from "@/lib/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and, or, ilike } from "drizzle-orm";
 
 export type PersonalInfo = typeof personalInfo.$inferSelect;
 export type Project = typeof projects.$inferSelect;
@@ -70,26 +70,38 @@ export interface PortfolioData {
   softSkills: SoftSkill[];
 }
 
+const monthNames: Record<string, string[]> = {
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  fr: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"],
+  ar: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+};
+
+const presentLabel: Record<string, string> = {
+  en: "Present",
+  fr: "Présent",
+  ar: "الحالي",
+};
+
 export function tsToYear(ts: number | null): string {
   if (!ts) return "";
   return new Date(ts * 1000).getFullYear().toString();
 }
 
-function tsToMonthYear(ts: number | null): string {
+function tsToMonthYear(ts: number | null, locale: string = "en"): string {
   if (!ts) return "";
   const d = new Date(ts * 1000);
-  const months = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
+  const months = monthNames[locale] || monthNames.en;
   return `${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-export function formatExperienceDate(startTs: number | null, endTs: number | null, current: boolean): string {
-  const start = tsToMonthYear(startTs);
-  const end = current ? "Présent" : tsToMonthYear(endTs);
+export function formatExperienceDate(startTs: number | null, endTs: number | null, current: boolean, locale: string = "en"): string {
+  const start = tsToMonthYear(startTs, locale);
+  const end = current ? (presentLabel[locale] || presentLabel.en) : tsToMonthYear(endTs, locale);
   return end ? `${start} – ${end}` : start;
 }
 
-export function formatEducationDate(startTs: number | null, endTs: number | null): string {
-  return `${tsToYear(startTs)} – ${tsToYear(endTs) || "Présent"}`;
+export function formatEducationDate(startTs: number | null, endTs: number | null, locale: string = "en"): string {
+  return `${tsToYear(startTs)} – ${tsToYear(endTs) || (presentLabel[locale] || presentLabel.en)}`;
 }
 
 export function parseJsonArray(value: string | null): string[] {
@@ -111,12 +123,53 @@ export function parseJsonObject<T>(value: string | null): T | null {
   }
 }
 
-export async function getSeoForPage(pagePath: string): Promise<SeoSetting | null> {
-  const result = await db.select().from(seoSettings).where(eq(seoSettings.pagePath, pagePath)).get();
-  return result ?? null;
+export async function getSeoForPage(pagePath: string, locale: string = "en"): Promise<SeoSetting | null> {
+  const result = await db
+    .select()
+    .from(seoSettings)
+    .where(and(eq(seoSettings.pagePath, pagePath), eq(seoSettings.locale, locale)))
+    .get() ?? null;
+  if (result) return result;
+  if (locale !== "en") {
+    const fallback = await db
+      .select()
+      .from(seoSettings)
+      .where(and(eq(seoSettings.pagePath, pagePath), eq(seoSettings.locale, "en")))
+      .get();
+    return fallback ?? null;
+  }
+  return null;
 }
 
-export async function getPortfolioData(): Promise<PortfolioData> {
+async function getWithFallback<T extends { locale: string }>(
+  table: any,
+  locale: string,
+  orderBy?: any,
+): Promise<T[]> {
+  let query = db.select().from(table).where(eq(table.locale, locale));
+  if (orderBy) query = query.orderBy(orderBy) as typeof query;
+  const results = await query.all();
+  if (locale !== "en" && results.length === 0) {
+    let fallbackQuery = db.select().from(table).where(eq(table.locale, "en"));
+    if (orderBy) fallbackQuery = fallbackQuery.orderBy(orderBy) as typeof fallbackQuery;
+    return fallbackQuery.all() as Promise<T[]>;
+  }
+  return results as T[];
+}
+
+async function getSingletonWithFallback<T extends { locale: string }>(
+  table: any,
+  locale: string,
+): Promise<T | null> {
+  const result = await db.select().from(table).where(eq(table.locale, locale)).get();
+  if (result) return result as T;
+  if (locale !== "en") {
+    return db.select().from(table).where(eq(table.locale, "en")).get() as Promise<T | null>;
+  }
+  return null;
+}
+
+export async function getPortfolioData(locale: string = "en"): Promise<PortfolioData> {
   const [
     personal,
     allProjects,
@@ -138,25 +191,25 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     allVolunteering,
     allSoftSkills,
   ] = await Promise.all([
-    db.select().from(personalInfo).get(),
-    db.select().from(projects).orderBy(asc(projects.orderIndex)).all(),
+    getSingletonWithFallback<PersonalInfo>(personalInfo, locale),
+    getWithFallback<Project>(projects, locale, asc(projects.orderIndex)),
     db.select().from(skills).orderBy(asc(skills.category), asc(skills.orderIndex)).all(),
-    db.select().from(experiences).orderBy(asc(experiences.orderIndex)).all(),
-    db.select().from(education).orderBy(asc(education.orderIndex)).all(),
+    getWithFallback<Experience>(experiences, locale, asc(experiences.orderIndex)),
+    getWithFallback<Education>(education, locale, asc(education.orderIndex)),
     db.select().from(certificates).orderBy(asc(certificates.orderIndex)).all(),
     db.select().from(socialLinks).orderBy(asc(socialLinks.orderIndex)).all(),
-    db.select().from(homepageContent).get(),
-    db.select().from(differentiators).orderBy(asc(differentiators.orderIndex)).all(),
-    db.select().from(siteSettings).get(),
+    getSingletonWithFallback<HomepageContent>(homepageContent, locale),
+    getWithFallback<Differentiator>(differentiators, locale, asc(differentiators.orderIndex)),
+    getSingletonWithFallback<SiteSettings>(siteSettings, locale),
     db.select().from(technologies).orderBy(asc(technologies.category), asc(technologies.name)).all(),
-    db.select().from(navItems).orderBy(asc(navItems.orderIndex)).all(),
-    db.select().from(formFields).orderBy(asc(formFields.orderIndex)).all(),
-    db.select().from(formSettings).get(),
-    db.select().from(customSections).orderBy(asc(customSections.orderIndex)).all(),
+    getWithFallback<NavItem>(navItems, locale, asc(navItems.orderIndex)),
+    getWithFallback<FormField>(formFields, locale, asc(formFields.orderIndex)),
+    getSingletonWithFallback<FormSettings>(formSettings, locale),
+    getWithFallback<CustomSection>(customSections, locale, asc(customSections.orderIndex)),
     db.select().from(customSectionItems).all(),
-    db.select().from(languages).orderBy(asc(languages.orderIndex)).all(),
-    db.select().from(volunteering).orderBy(asc(volunteering.orderIndex)).all(),
-    db.select().from(softSkills).orderBy(asc(softSkills.orderIndex)).all(),
+    getWithFallback<Language>(languages, locale, asc(languages.orderIndex)),
+    getWithFallback<VolunteeringEntry>(volunteering, locale, asc(volunteering.orderIndex)),
+    getWithFallback<SoftSkill>(softSkills, locale, asc(softSkills.orderIndex)),
   ]);
 
   const projectsWithTech: ProjectWithTech[] = await Promise.all(
@@ -188,7 +241,7 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     .map((section) => ({
       ...section,
       items: allCustomSectionItems
-        .filter((item) => item.sectionId === section.id)
+        .filter((item) => item.sectionId === section.id && item.locale === locale)
         .sort((a, b) => a.orderIndex - b.orderIndex),
     }));
 
@@ -214,8 +267,8 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   };
 }
 
-export async function getProjectsForPage(): Promise<ProjectWithTech[]> {
-  const allProjects = await db.select().from(projects).orderBy(asc(projects.orderIndex)).all();
+export async function getProjectsForPage(locale: string = "en"): Promise<ProjectWithTech[]> {
+  const allProjects = await getWithFallback<Project>(projects, locale, asc(projects.orderIndex));
 
   const projectsWithTech: ProjectWithTech[] = await Promise.all(
     allProjects.map(async (project) => {
@@ -241,4 +294,27 @@ export async function getProjectsForPage(): Promise<ProjectWithTech[]> {
   );
 
   return projectsWithTech;
+}
+
+export async function getProjectBySlug(slug: string, locale: string = "en"): Promise<ProjectWithTech | null> {
+  const allProjects = await getWithFallback<Project>(projects, locale, asc(projects.orderIndex));
+  const project = allProjects.find((p) => p.slug === slug);
+  if (!project) return null;
+
+  const techLinks = await db
+    .select({ technologyId: projectTechnologies.technologyId })
+    .from(projectTechnologies)
+    .where(eq(projectTechnologies.projectId, project.id))
+    .all();
+
+  const techIds = techLinks.map((l) => l.technologyId);
+  const techs = techIds.length
+    ? await db.select().from(technologies).where(
+        techIds.length === 1
+          ? eq(technologies.id, techIds[0])
+          : undefined
+      )
+    : [];
+
+  return { ...project, technologies: techs.filter(Boolean) };
 }

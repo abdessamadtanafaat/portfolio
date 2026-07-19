@@ -28,6 +28,15 @@ const nextConfig = {
       bodySizeLimit: "10mb",
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/en",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

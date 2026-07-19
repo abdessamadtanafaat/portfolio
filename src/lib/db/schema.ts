@@ -19,7 +19,8 @@ export const adminUser = sqliteTable("admin_user", {
 });
 
 export const personalInfo = sqliteTable("personal_info", {
-  id: integer("id").primaryKey().default(1),
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   name: text("name").notNull(),
   title: text("title").notNull(),
   tagline: text("tagline"),
@@ -34,20 +35,22 @@ export const personalInfo = sqliteTable("personal_info", {
 });
 
 export const siteSettings = sqliteTable("site_settings", {
-  id: integer("id").primaryKey().default(1),
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   siteName: text("site_name").notNull().default("Portfolio"),
   faviconUrl: text("favicon_url"),
   defaultOgImageUrl: text("default_og_image_url"),
   analyticsId: text("analytics_id"),
   contactFormEndpoint: text("contact_form_endpoint").default("/api/contact"),
   maintenanceMode: integer("maintenance_mode", { mode: "boolean" }).notNull().default(false),
-  maintenanceMessage: text("maintenance_message").default("Notre site est actuellement en maintenance. Nous serons de retour très bientôt. Merci pour votre patience."),
+  maintenanceMessage: text("maintenance_message").default("Site under maintenance."),
   createdAt: integer("created_at").notNull(),
   updatedAt: integer("updated_at").notNull(),
 });
 
 export const homepageContent = sqliteTable("homepage_content", {
-  id: integer("id").primaryKey().default(1),
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   heroHeadline: text("hero_headline").notNull(),
   heroSubtext: text("hero_subtext"),
   heroCtaText: text("hero_cta_text"),
@@ -106,7 +109,8 @@ export const homepageContent = sqliteTable("homepage_content", {
 
 export const seoSettings = sqliteTable("seo_settings", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  pagePath: text("page_path").notNull().unique(),
+  pagePath: text("page_path").notNull(),
+  locale: text("locale").notNull().default("en"),
   title: text("title").notNull(),
   description: text("description"),
   ogTitle: text("og_title"),
@@ -120,7 +124,8 @@ export const seoSettings = sqliteTable("seo_settings", {
 
 export const projects = sqliteTable("projects", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  slug: text("slug").notNull().unique(),
+  slug: text("slug").notNull(),
+  locale: text("locale").notNull().default("en"),
   title: text("title").notNull(),
   subtitle: text("subtitle"),
   shortDescription: text("short_description"),
@@ -197,6 +202,7 @@ export const skills = sqliteTable("skills", {
 
 export const experiences = sqliteTable("experiences", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   company: text("company").notNull(),
   role: text("role").notNull(),
   location: text("location"),
@@ -213,6 +219,7 @@ export const experiences = sqliteTable("experiences", {
 
 export const education = sqliteTable("education", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   institution: text("institution").notNull(),
   degree: text("degree").notNull(),
   field: text("field").notNull(),
@@ -250,6 +257,7 @@ export const socialLinks = sqliteTable("social_links", {
 
 export const differentiators = sqliteTable("differentiators", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   title: text("title").notNull(),
   description: text("description").notNull(),
   icon: text("icon").notNull().default("Code"),
@@ -261,6 +269,7 @@ export const differentiators = sqliteTable("differentiators", {
 
 export const navItems = sqliteTable("nav_items", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   label: text("label").notNull(),
   href: text("href").notNull(),
   type: text("type", { enum: ["internal", "anchor", "external"] }).notNull().default("internal"),
@@ -272,6 +281,7 @@ export const navItems = sqliteTable("nav_items", {
 
 export const formFields = sqliteTable("form_fields", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   formType: text("form_type").notNull().default("contact"),
   label: text("label").notNull(),
   name: text("name").notNull(),
@@ -289,12 +299,13 @@ export const formFields = sqliteTable("form_fields", {
 });
 
 export const formSettings = sqliteTable("form_settings", {
-  id: integer("id").primaryKey().default(1),
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   formType: text("form_type").notNull().default("contact"),
-  submitButtonText: text("submit_button_text").notNull().default("Envoyer le message"),
-  loadingButtonText: text("loading_button_text").notNull().default("Envoi en cours..."),
-  successMessage: text("success_message").notNull().default("Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais."),
-  errorMessage: text("error_message").notNull().default("Une erreur est survenue. Veuillez réessayer."),
+  submitButtonText: text("submit_button_text").notNull().default("Send message"),
+  loadingButtonText: text("loading_button_text").notNull().default("Sending..."),
+  successMessage: text("success_message").notNull().default("Message sent successfully!"),
+  errorMessage: text("error_message").notNull().default("An error occurred. Please try again."),
   createdAt: integer("created_at").notNull(),
   updatedAt: integer("updated_at").notNull(),
 });
@@ -311,7 +322,8 @@ export const contactMessages = sqliteTable("contact_messages", {
 
 export const customSections = sqliteTable("custom_sections", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  slug: text("slug").notNull().unique(),
+  slug: text("slug").notNull(),
+  locale: text("locale").notNull().default("en"),
   badge: text("badge"),
   title: text("title").notNull(),
   description: text("description"),
@@ -324,6 +336,7 @@ export const customSections = sqliteTable("custom_sections", {
 
 export const customSectionItems = sqliteTable("custom_section_items", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   sectionId: integer("section_id")
     .notNull()
     .references(() => customSections.id, { onDelete: "cascade" }),
@@ -344,6 +357,7 @@ export const customSectionItems = sqliteTable("custom_section_items", {
 
 export const languages = sqliteTable("languages", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   name: text("name").notNull(),
   level: text("level").notNull(),
   proficiency: integer("proficiency").notNull().default(80),
@@ -353,6 +367,7 @@ export const languages = sqliteTable("languages", {
 
 export const volunteering = sqliteTable("volunteering", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   role: text("role").notNull(),
   organization: text("organization").notNull(),
   startDate: integer("start_date").notNull(),
@@ -366,6 +381,7 @@ export const volunteering = sqliteTable("volunteering", {
 
 export const softSkills = sqliteTable("soft_skills", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull().default("en"),
   name: text("name").notNull(),
   category: text("category").notNull().default("soft_skill"),
   icon: text("icon"),
@@ -375,7 +391,13 @@ export const softSkills = sqliteTable("soft_skills", {
 });
 
 export const indexes = [
-  uniqueIndex("idx_projects_slug").on(projects.slug),
+  uniqueIndex("idx_personal_info_locale").on(personalInfo.locale),
+  uniqueIndex("idx_site_settings_locale").on(siteSettings.locale),
+  uniqueIndex("idx_homepage_content_locale").on(homepageContent.locale),
+  uniqueIndex("idx_seo_page_path_locale").on(seoSettings.pagePath, seoSettings.locale),
+  uniqueIndex("idx_projects_slug_locale").on(projects.slug, projects.locale),
+  uniqueIndex("idx_custom_sections_slug_locale").on(customSections.slug, customSections.locale),
+  uniqueIndex("idx_form_settings_type_locale").on(formSettings.formType, formSettings.locale),
   index("idx_projects_category").on(projects.category),
   index("idx_projects_status").on(projects.status),
   index("idx_projects_featured").on(projects.featured),

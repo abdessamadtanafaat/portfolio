@@ -1,0 +1,164 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "skills": "Compétences",
+    "education": "Formation",
+    "certificates": "Certifications",
+    "languages": "Langues",
+    "volunteering": "Bénévolat",
+    "softSkills": "Savoir-être",
+    "contact": "Contact",
+    "toggleDark": "Passer en mode sombre",
+    "toggleLight": "Passer en mode clair",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "hero": {
+    "badge": "Disponible pour de nouvelles opportunités",
+    "ctaContact": "Me contacter",
+    "ctaProjects": "Voir mes projets",
+    "ctaCv": "Télécharger CV",
+    "scrollDown": "Faire défiler vers le bas",
+    "defaultTagline": "Ingénieur Full-Stack spécialisé dans les applications web scalables, sécurisées et performantes."
+  },
+  "about": {
+    "badge": "Profil",
+    "title": "À propos de moi",
+    "description": "Ingénieur Full-Stack passionné avec 5+ années d'expérience.",
+    "differentiatorsTitle": "Ce qui me distingue",
+    "cards": {
+      "fullstack": {
+        "title": "Développement Full-Stack",
+        "description": "Conception et développement d'applications web de A à Z : architecture, API REST/GraphQL, frontend réactif, déploiement CI/CD."
+      },
+      "cms": {
+        "title": "Solutions CMS & E-commerce",
+        "description": "Expertise Drupal (7/8/9/10), migrations complexes, multisite, headless. Solutions e-commerce sur mesure et intégrations ERP/CRM."
+      },
+      "cloud": {
+        "title": "Architecture Cloud & DevOps",
+        "description": "Infrastructure as Code (Terraform), conteneurisation (Docker/K8s), CI/CD (GitLab/GitHub Actions), monitoring, sécurité."
+      }
+    }
+  },
+  "experience": {
+    "badge": "Expérience",
+    "title": "Parcours professionnel",
+    "description": "5+ années d'expérience dans le développement d'applications critiques.",
+    "current": "Actuel",
+    "viewLinkedin": "Voir mon profil LinkedIn"
+  },
+  "projects": {
+    "badge": "Réalisations",
+    "title": "Projets clés",
+    "description": "Quelques projets livrés en production, du prototype à l'industrialisation.",
+    "viewAll": "Voir tous les projets",
+    "viewProject": "Voir le projet",
+    "viewOnGithub": "Voir sur GitHub",
+    "all": "Tous",
+    "noProjects": "Aucun projet dans cette catégorie."
+  },
+  "skills": {
+    "badge": "Compétences",
+    "title": "Stack technique & Expertise",
+    "description": "Une expertise transversale couvrant tout le cycle de vie du développement logiciel.",
+    "mainTechs": "Technologies principales",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "cms": "CMS / Drupal",
+      "devops": "DevOps / Cloud",
+      "database": "Bases de données",
+      "tools": "Outils & Méthodes",
+      "testing": "Testing"
+    }
+  },
+  "education": {
+    "badge": "Formation & Certifications",
+    "title": "Formation & Certifications",
+    "description": "Un parcours académique solide complété par des certifications reconnues.",
+    "degrees": "Diplômes",
+    "certifications": "Certifications"
+  },
+  "certificates": {
+    "badge": "Certifications",
+    "title": "Certifications & Formations",
+    "description": "Des certifications reconnues mondialement validant l'expertise technique.",
+    "certification": "Certification",
+    "verify": "Vérifier",
+    "keepLearning": "En veille technologique permanente"
+  },
+  "languages": {
+    "badge": "Langues",
+    "title": "Compétences linguistiques",
+    "description": "Maîtrise des langues et capacités de communication multilingue.",
+    "proficiency": "Maîtrise"
+  },
+  "volunteering": {
+    "badge": "Bénévolat",
+    "title": "Engagement & Bénévolat",
+    "description": "Mon engagement associatif et bénévole."
+  },
+  "softSkills": {
+    "badge": "Savoir-être & Centres d'intérêt",
+    "title": "Soft Skills & Hobbies",
+    "description": "Les qualités humaines et passions qui me definissent.",
+    "softSkillsTitle": "Savoir-être",
+    "hobbiesTitle": "Centres d'intérêt"
+  },
+  "contact": {
+    "badge": "Contact",
+    "title": "Travaillons ensemble",
+    "description": "Vous avez un projet en tête ? N'hésitez pas à me contacter.",
+    "coordinates": "Coordonnées",
+    "email": "Email",
+    "phone": "Téléphone",
+    "location": "Localisation",
+    "socialMedia": "Réseaux sociaux",
+    "sendMessage": "Envoyer un message",
+    "sending": "Envoi en cours...",
+    "send": "Envoyer le message",
+    "success": "Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.",
+    "error": "Une erreur est survenue. Veuillez réessayer ou me contacter directement par email.",
+    "validation": {
+      "required": "Le champ {field} est requis",
+      "email": "Format d'email invalide",
+      "messageMin": "Le message doit contenir au moins 20 caractères",
+      "nameMin": "Le nom doit contenir au moins 2 caractères",
+      "subjectMin": "L'objet doit contenir au moins 5 caractères"
+    }
+  },
+  "footer": {
+    "description": "Full-Stack Engineer passionné par la création d'applications web robustes et scalables.",
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "technologies": "Technologies",
+    "copyright": "Tous droits réservés."
+  },
+  "maintenance": {
+    "title": "Site en maintenance",
+    "message": "Notre site est actuellement en maintenance. Nous serons de retour très bientôt. Merci pour votre patience."
+  },
+  "projectsPage": {
+    "badge": "Réalisations",
+    "title": "Projets",
+    "description": "Tous les projets livrés en production, du prototype à l'industrialisation.",
+    "all": "Tous",
+    "noProjects": "Aucun projet dans cette catégorie."
+  },
+  "projectDetail": {
+    "backToProjects": "Retour aux projets",
+    "details": "Détails",
+    "technologies": "Technologies",
+    "liveDemo": "Démo live",
+    "sourceCode": "Code source"
+  },
+  "common": {
+    "viewMore": "En savoir plus",
+    "view": "Voir",
+    "loading": "Chargement..."
+  }
+}

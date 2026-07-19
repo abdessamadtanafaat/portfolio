@@ -5,8 +5,11 @@ import { Users } from "lucide-react";
 import { getIconComponent } from "@/components/admin/editors/IconPicker";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import { formatExperienceDate } from "@/lib/queries/portfolio";
 import type { VolunteeringEntry, HomepageContent } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface VolunteeringProps {
   entries: VolunteeringEntry[];
@@ -24,21 +27,24 @@ const colorMap: Record<string, { icon: string; bg: string }> = {
 };
 
 export function Volunteering({ entries, homepage }: VolunteeringProps) {
+  const { t, locale } = useTranslations();
   if (entries.length === 0) return null;
 
   return (
     <section id="volunteering" className="section-padding relative mesh-gradient">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.volunteeringBadge || "Bénévolat"}
+              {homepage?.volunteeringBadge || t("volunteering.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.volunteeringTitle || "Engagement & Bénévolat"}
+              {homepage?.volunteeringTitle || t("volunteering.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.volunteeringDescription || "Mon engagement associatif et bénévole."}
+              {homepage?.volunteeringDescription || t("volunteering.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -49,7 +55,7 @@ export function Volunteering({ entries, homepage }: VolunteeringProps) {
             {entries.map((entry, index) => {
               const IconComp = entry.icon ? getIconComponent(entry.icon) : Users;
               const colors = colorMap[entry.color || "brand"] || colorMap.brand;
-              const dateStr = formatExperienceDate(entry.startDate, entry.endDate, !entry.endDate);
+              const dateStr = formatExperienceDate(entry.startDate, entry.endDate, !entry.endDate, locale);
 
               return (
                 <ScrollReveal key={entry.id} delay={index * 0.1} direction="left">

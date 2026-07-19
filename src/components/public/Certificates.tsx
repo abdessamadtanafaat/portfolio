@@ -6,8 +6,11 @@ import { Award, Calendar, ExternalLink, CheckCircle, Clock } from "lucide-react"
 import Link from "next/link";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Certificate, HomepageContent } from "@/lib/queries/portfolio";
 import { tsToYear, parseJsonArray } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface CertificatesProps {
   certificates: Certificate[];
@@ -15,25 +18,27 @@ interface CertificatesProps {
 }
 
 export function Certificates({ certificates, homepage }: CertificatesProps) {
+  const { t } = useTranslations();
   const inProgress = parseJsonArray(homepage?.certificatesInProgress ?? null);
 
   return (
     <section id="certificates" className="relative py-24 md:py-32">
-      {/* Gradient background */}
+      <HeroOrbs />
       <div className="absolute inset-0 mesh-gradient opacity-25" />
       <div className="noise-overlay" />
+      <GradientOrbs />
 
       <div className="relative mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.certificatesBadge || "Certifications"}
+              {homepage?.certificatesBadge || t("certificates.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.certificatesTitle || "Certifications & Formations"}
+              {homepage?.certificatesTitle || t("certificates.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.certificatesDescription || "Des certifications reconnues mondialement validant l'expertise technique."}
+              {homepage?.certificatesDescription || t("certificates.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -48,7 +53,6 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
                 transition={{ duration: 0.4, delay: index * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}
                 className="group glass-card card-hover relative flex flex-col h-full p-6 overflow-hidden"
               >
-                {/* Gradient accent top */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
 
                 <div className="flex items-start gap-4 mb-4">
@@ -56,7 +60,7 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
                     <Award className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <span className="inline-block px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-600 bg-amber-50 rounded-full dark:bg-amber-900/30 dark:text-amber-400">Certification</span>
+                    <span className="inline-block px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-600 bg-amber-50 rounded-full dark:bg-amber-900/30 dark:text-amber-400">{t("certificates.certification")}</span>
                   </div>
                 </div>
 
@@ -72,7 +76,7 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
                   {cert.credentialUrl && (
                     <Link href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="group/link inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
                       <CheckCircle className="h-3.5 w-3.5" />
-                      <span>Vérifier</span>
+                      <span>{t("certificates.verify")}</span>
                       <ExternalLink className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
                     </Link>
                   )}
@@ -85,7 +89,7 @@ export function Certificates({ certificates, homepage }: CertificatesProps) {
         {inProgress.length > 0 && (
           <ScrollReveal delay={0.3}>
             <div className="mt-12 text-center">
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">En veille technologique permanente</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{t("certificates.keepLearning")}</p>
               <div className="flex flex-wrap items-center justify-center gap-3">
                 {inProgress.map((cert) => (
                   <motion.span

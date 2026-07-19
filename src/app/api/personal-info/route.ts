@@ -6,8 +6,10 @@ import { personalInfo } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
-  const result = await db.select().from(personalInfo).get();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const result = await db.select().from(personalInfo).where(eq(personalInfo.locale, locale)).get();
 
   if (!result) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -23,9 +25,10 @@ export async function PUT(request: Request) {
   }
 
   const body = await request.json();
+  const locale = body.locale || "en";
   const now = Math.floor(Date.now() / 1000);
 
-  const existing = await db.select().from(personalInfo).get();
+  const existing = await db.select().from(personalInfo).where(eq(personalInfo.locale, locale)).get();
 
   let result;
   if (existing) {
@@ -38,7 +41,7 @@ export async function PUT(request: Request) {
   } else {
     result = await db
       .insert(personalInfo)
-      .values({ ...body, id: 1, createdAt: now, updatedAt: now })
+      .values({ ...body, locale, createdAt: now, updatedAt: now })
       .returning()
       .get();
   }

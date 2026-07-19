@@ -6,6 +6,9 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { useTranslations } from "@/i18n/useTranslations";
+import { LanguageSwitcher } from "@/components/public/LanguageSwitcher";
+import { locales, defaultLocale } from "@/i18n/config";
 import type { NavItem } from "@/lib/queries/portfolio";
 
 interface NavbarProps {
@@ -16,8 +19,12 @@ interface NavbarProps {
 export function Navbar({ name, navItems = [] }: NavbarProps) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslations();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const segments = pathname.split("/");
+  const locale = segments[1] && locales.includes(segments[1] as typeof locales[number]) ? segments[1] : defaultLocale;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -45,10 +52,10 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
     >
       <nav aria-label="Primary" className="mx-auto flex max-w-6xl items-center justify-between container-px py-3.5">
         <Link
-          href="/"
-          onClick={() => handleNavClick("/")}
+          href={`/${locale}`}
+          onClick={() => handleNavClick(`/${locale}`)}
           className="group flex items-center gap-3"
-          aria-label="Accueil"
+          aria-label={t("nav.home")}
         >
           <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-lg shadow-brand-500/20 transition-all group-hover:shadow-brand-500/30 group-hover:scale-105">
             AT
@@ -60,13 +67,14 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
 
         <ul className="hidden md:flex items-center gap-0.5">
           {visibleNavItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/" && item.href.startsWith("/") && pathname.startsWith(item.href));
+            const itemHref = item.href.startsWith("/") ? `/${locale}${item.href}` : item.href;
+            const isActive = pathname === itemHref || (itemHref !== "/" && itemHref.startsWith("/") && pathname.startsWith(itemHref));
             return (
               <li key={item.id}>
                 <Link
-                  href={item.href}
+                  href={itemHref}
                   target={item.target}
-                  onClick={() => handleNavClick(item.href)}
+                  onClick={() => handleNavClick(itemHref)}
                   className={`relative px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${
                     isActive
                       ? "text-brand-700 dark:text-brand-300 bg-brand-50/80 dark:bg-brand-900/20"
@@ -81,10 +89,12 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
         </ul>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+
           <button
             onClick={toggleTheme}
             className="p-2.5 rounded-xl border border-slate-200/80 bg-white/80 text-slate-600 shadow-sm hover:bg-slate-50 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all duration-200"
-            aria-label={theme === "light" ? "Passer en mode sombre" : "Passer en mode clair"}
+            aria-label={theme === "light" ? t("nav.toggleDark") : t("nav.toggleLight")}
           >
             {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </button>
@@ -92,7 +102,7 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
           <button
             type="button"
             className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-white/80 text-slate-600 shadow-sm hover:bg-slate-50 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 transition-all duration-200"
-            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-label={mobileOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
           >
@@ -104,13 +114,14 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
       <div className={`md:hidden border-t border-slate-200/70 bg-white/90 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-950/90 transition-all duration-300 ${mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
         <ul className="container-px py-3 space-y-0.5">
           {visibleNavItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/" && item.href.startsWith("/") && pathname.startsWith(item.href));
+            const itemHref = item.href.startsWith("/") ? `/${locale}${item.href}` : item.href;
+            const isActive = pathname === itemHref || (itemHref !== "/" && itemHref.startsWith("/") && pathname.startsWith(itemHref));
             return (
               <li key={item.id}>
                 <Link
-                  href={item.href}
+                  href={itemHref}
                   target={item.target}
-                  onClick={() => handleNavClick(item.href)}
+                  onClick={() => handleNavClick(itemHref)}
                   className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? "bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-300"

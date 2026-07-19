@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { getIconComponent } from "@/components/admin/editors/IconPicker";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { SoftSkill, HomepageContent } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface SoftSkillsProps {
   skills: SoftSkill[];
@@ -13,6 +16,7 @@ interface SoftSkillsProps {
 }
 
 export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
+  const { t } = useTranslations();
   if (skills.length === 0) return null;
 
   const softSkills = skills
@@ -25,17 +29,19 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
 
   return (
     <section id="softskills" className="section-padding relative mesh-gradient">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.softSkillsBadge || "Savoir-être & Centres d'intérêt"}
+              {homepage?.softSkillsBadge || t("softSkills.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.softSkillsTitle || "Soft Skills & Hobbies"}
+              {homepage?.softSkillsTitle || t("softSkills.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.softSkillsDescription || "Les qualités humaines et passions qui me definissent."}
+              {homepage?.softSkillsDescription || t("softSkills.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -43,7 +49,7 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
         {softSkills.length > 0 && (
           <ScrollReveal delay={0.1}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-5 text-center">
-              Savoir-être
+              {t("softSkills.softSkillsTitle")}
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
               {softSkills.map((skill, index) => {
@@ -71,7 +77,7 @@ export function SoftSkills({ skills, homepage }: SoftSkillsProps) {
         {hobbies.length > 0 && (
           <ScrollReveal delay={0.2}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-5 text-center">
-              Centres d&apos;intérêt
+              {t("softSkills.hobbiesTitle")}
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hobbies.map((skill, index) => {

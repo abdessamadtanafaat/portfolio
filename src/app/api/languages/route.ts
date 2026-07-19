@@ -6,10 +6,13 @@ import { languages } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { asc, eq } from "drizzle-orm";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
   const results = await db
     .select()
     .from(languages)
+    .where(eq(languages.locale, locale))
     .orderBy(asc(languages.orderIndex))
     .all();
 

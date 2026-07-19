@@ -4,27 +4,24 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { projects } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and } from "drizzle-orm";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const featured = searchParams.get("featured");
+  const locale = searchParams.get("locale") || "en";
 
-  let results;
+  const conditions = [eq(projects.locale, locale)];
   if (featured === "true") {
-    results = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.featured, true))
-      .orderBy(asc(projects.orderIndex))
-      .all();
-  } else {
-    results = await db
-      .select()
-      .from(projects)
-      .orderBy(asc(projects.orderIndex))
-      .all();
+    conditions.push(eq(projects.featured, true));
   }
+
+  const results = await db
+    .select()
+    .from(projects)
+    .where(and(...conditions))
+    .orderBy(asc(projects.orderIndex))
+    .all();
 
   return NextResponse.json(results);
 }

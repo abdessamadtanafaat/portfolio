@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import { Mail, Phone, Send, Loader2, CheckCircle, AlertCircle, MapPin } from "lucide-react";
 import { Linkedin, Github } from "@/components/icons";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { PersonalInfo, SocialLink, HomepageContent, FormField, FormSettings } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface ContactProps {
   personal: PersonalInfo | null;
@@ -24,6 +27,7 @@ interface FormErrors {
 }
 
 export function Contact({ personal, socialLinks, homepage, formFields = [], formSettings }: ContactProps) {
+  const { t } = useTranslations();
   const visibleFields = useMemo(() => formFields.filter((f) => f.visible && f.formType === "contact").sort((a, b) => a.orderIndex - b.orderIndex), [formFields]);
   const [formData, setFormData] = useState<DynamicFormData>(() => {
     const initial: DynamicFormData = {};
@@ -39,15 +43,15 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
     visibleFields.forEach((field) => {
       const value = formData[field.name] || "";
       if (field.required && !value.trim()) {
-        newErrors[field.name] = `Le champ ${field.label} est requis`;
+        newErrors[field.name] = t("contact.validation.required", { field: field.label });
       } else if (field.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        newErrors[field.name] = "Format d'email invalide";
+        newErrors[field.name] = t("contact.validation.email");
       } else if (field.name === "message" && value && value.trim().length < 20) {
-        newErrors[field.name] = "Le message doit contenir au moins 20 caractères";
+        newErrors[field.name] = t("contact.validation.messageMin");
       } else if (field.name === "name" && value && value.trim().length < 2) {
-        newErrors[field.name] = "Le nom doit contenir au moins 2 caractères";
+        newErrors[field.name] = t("contact.validation.nameMin");
       } else if (field.name === "subject" && value && value.trim().length < 5) {
-        newErrors[field.name] = "L'objet doit contenir au moins 5 caractères";
+        newErrors[field.name] = t("contact.validation.subjectMin");
       }
     });
     setErrors(newErrors);
@@ -77,7 +81,7 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
       }
     } catch {
       setStatus("error");
-      setErrorMessage(formSettings?.errorMessage || "Une erreur est survenue. Veuillez réessayer ou me contacter directement par email.");
+      setErrorMessage(formSettings?.errorMessage || t("contact.error"));
     }
   };
 
@@ -93,37 +97,37 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
   const github = socialLinks.find((l) => l.platform === "github");
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: personal?.email ?? "", href: personal?.email ? `mailto:${personal.email}` : "#" },
-    { icon: Phone, label: "Téléphone", value: personal?.phone ?? "", href: personal?.phone ? `tel:${personal.phone.replace(/\s/g, "")}` : "#" },
-    ...(personal?.location ? [{ icon: MapPin, label: "Localisation", value: personal.location, href: "#" }] : []),
+    { icon: Mail, label: t("contact.email"), value: personal?.email ?? "", href: personal?.email ? `mailto:${personal.email}` : "#" },
+    { icon: Phone, label: t("contact.phone"), value: personal?.phone ?? "", href: personal?.phone ? `tel:${personal.phone.replace(/\s/g, "")}` : "#" },
+    ...(personal?.location ? [{ icon: MapPin, label: t("contact.location"), value: personal.location, href: "#" }] : []),
   ].filter((item) => item.value);
 
   return (
     <section id="contact" className="relative py-24 md:py-32">
-      {/* Gradient background */}
+      <HeroOrbs />
       <div className="absolute inset-0 mesh-gradient opacity-20" />
+      <GradientOrbs />
       <div className="noise-overlay" />
 
       <div className="relative mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4">
-              {homepage?.contactBadge || "Contact"}
+              {homepage?.contactBadge || t("contact.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.contactTitle || "Travaillons ensemble"}
+              {homepage?.contactTitle || t("contact.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.contactDescription || "Vous avez un projet en tête ? N'hésitez pas à me contacter."}
+              {homepage?.contactDescription || t("contact.description")}
             </p>
           </div>
         </ScrollReveal>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          {/* Contact Info */}
           <ScrollReveal delay={0.1} direction="left">
             <div className="glass-card p-6 sm:p-8 h-full">
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Coordonnées</h3>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t("contact.coordinates")}</h3>
               <div className="space-y-4">
                 {contactInfo.map((item, index) => (
                   <motion.a
@@ -148,10 +152,9 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
                 ))}
               </div>
 
-              {/* Social Links */}
               {(linkedin || github || personal?.email) && (
                 <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Réseaux sociaux</h4>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">{t("contact.socialMedia")}</h4>
                   <div className="flex gap-3">
                     {linkedin && (
                       <a href={linkedin.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-600 dark:text-slate-300 hover:from-brand-500 hover:to-brand-600 hover:text-white dark:hover:from-brand-600 dark:hover:to-brand-700 dark:hover:text-white transition-all duration-200 shadow-sm hover:shadow-lg hover:shadow-brand-500/25" aria-label="LinkedIn">
@@ -174,15 +177,14 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
             </div>
           </ScrollReveal>
 
-          {/* Contact Form */}
           <ScrollReveal delay={0.2} direction="right">
             <div className="glass-card p-6 sm:p-8 h-full">
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Envoyer un message</h3>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t("contact.sendMessage")}</h3>
 
               {status === "success" && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-700 dark:text-emerald-400">
                   <CheckCircle className="h-5 w-5 flex-shrink-0" />
-                  <p className="text-sm font-medium">{formSettings?.successMessage || homepage?.contactSuccessMessage || "Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais."}</p>
+                  <p className="text-sm font-medium">{formSettings?.successMessage || homepage?.contactSuccessMessage || t("contact.success")}</p>
                 </motion.div>
               )}
 
@@ -210,9 +212,9 @@ export function Contact({ personal, socialLinks, homepage, formFields = [], form
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                 >
                   {status === "submitting" ? (
-                    <><Loader2 className="h-5 w-5 animate-spin" /><span>{formSettings?.loadingButtonText || "Envoi en cours..."}</span></>
+                    <><Loader2 className="h-5 w-5 animate-spin" /><span>{formSettings?.loadingButtonText || t("contact.sending")}</span></>
                   ) : (
-                    <><Send className="h-5 w-5" /><span>{formSettings?.submitButtonText || "Envoyer le message"}</span></>
+                    <><Send className="h-5 w-5" /><span>{formSettings?.submitButtonText || t("contact.send")}</span></>
                   )}
                 </motion.button>
               </form>

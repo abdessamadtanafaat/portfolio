@@ -5,8 +5,11 @@ import { motion } from "framer-motion";
 import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Zap } from "lucide-react";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { HomepageContent, Differentiator } from "@/lib/queries/portfolio";
 import { parseJsonObject } from "@/lib/queries/portfolio";
+import { useTranslations, type TranslationKey } from "@/i18n/useTranslations";
 
 const iconMap: Record<string, React.ElementType> = {
   Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Zap,
@@ -26,11 +29,13 @@ interface AboutCard {
   bg: string;
 }
 
-const defaultCards: AboutCard[] = [
-  { icon: "Code", title: "Développement Full-Stack", description: "Conception et développement d'applications web de A à Z : architecture, API REST/GraphQL, frontend réactif, déploiement CI/CD.", color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-900/30" },
-  { icon: "Briefcase", title: "Solutions CMS & E-commerce", description: "Expertise Drupal (7/8/9/10), migrations complexes, multisite, headless. Solutions e-commerce sur mesure et intégrations ERP/CRM.", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/30" },
-  { icon: "GraduationCap", title: "Architecture Cloud & DevOps", description: "Infrastructure as Code (Terraform), conteneurisation (Docker/K8s), CI/CD (GitLab/GitHub Actions), monitoring, sécurité.", color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-900/30" },
-];
+function getDefaultCards(t: (key: TranslationKey) => string): AboutCard[] {
+  return [
+    { icon: "Code", title: t("about.cards.fullstack.title"), description: t("about.cards.fullstack.description"), color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-900/30" },
+    { icon: "Briefcase", title: t("about.cards.cms.title"), description: t("about.cards.cms.description"), color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/30" },
+    { icon: "GraduationCap", title: t("about.cards.cloud.title"), description: t("about.cards.cloud.description"), color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-900/30" },
+  ];
+}
 
 const colorMap: Record<string, { icon: string; bg: string; glow: string }> = {
   brand: { icon: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-900/30", glow: "shadow-brand-500/20 dark:shadow-brand-400/20" },
@@ -40,21 +45,25 @@ const colorMap: Record<string, { icon: string; bg: string; glow: string }> = {
 };
 
 export function About({ homepage, differentiators }: AboutProps) {
+  const { t } = useTranslations();
+  const defaultCards = getDefaultCards(t);
   const aboutCards = parseJsonObject<AboutCard[]>(homepage?.aboutCards ?? null) || defaultCards;
 
   return (
     <section id="about" className="section-padding relative">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.aboutBadge || "Profil"}
+              {homepage?.aboutBadge || t("about.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.aboutTitle || "A propos de moi"}
+              {homepage?.aboutTitle || t("about.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.aboutDescription || "Ingénieur Full-Stack passionné avec 5+ années d'expérience."}
+              {homepage?.aboutDescription || t("about.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -89,7 +98,7 @@ export function About({ homepage, differentiators }: AboutProps) {
           <div className="mt-16">
             <ScrollReveal>
               <h3 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-8">
-                {homepage?.differentiatorsTitle || "Ce qui me distingue"}
+                {homepage?.differentiatorsTitle || t("about.differentiatorsTitle")}
               </h3>
             </ScrollReveal>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">

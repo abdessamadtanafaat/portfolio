@@ -4,7 +4,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Heart, Zap, Star, ArrowRight } from "lucide-react";
 import type { CustomSection, CustomSectionItem } from "@/lib/queries/portfolio";
-import { parseJsonArray, parseJsonObject } from "@/lib/queries/portfolio";
+import { parseJsonArray } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface CustomSectionProps {
   section: CustomSection;
@@ -26,13 +27,13 @@ const colorMap: Record<string, { icon: string; bg: string; border: string }> = {
 };
 
 function CardsLayout({ items }: { items: CustomSectionItem[] }) {
+  const { t } = useTranslations();
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item, index) => {
         const IconComp = item.icon ? iconMap[item.icon] || Code : null;
         const colors = colorMap[item.color || "brand"] || colorMap.brand;
         const tags = parseJsonArray(item.tags);
-        const meta = parseJsonObject<Record<string, string>>(item.metadata);
 
         return (
           <motion.div
@@ -66,7 +67,7 @@ function CardsLayout({ items }: { items: CustomSectionItem[] }) {
             {item.linkUrl && (
               <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
                 <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="group/link inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
-                  {item.linkLabel || "En savoir plus"}<ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
+                  {item.linkLabel || t("common.viewMore")}<ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
                 </a>
               </div>
             )}
@@ -108,6 +109,7 @@ function GridLayout({ items }: { items: CustomSectionItem[] }) {
 }
 
 function ListLayout({ items }: { items: CustomSectionItem[] }) {
+  const { t } = useTranslations();
   return (
     <div className="space-y-4">
       {items.map((item, index) => {
@@ -143,7 +145,7 @@ function ListLayout({ items }: { items: CustomSectionItem[] }) {
             </div>
             {item.linkUrl && (
               <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="group/link inline-flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors flex-shrink-0">
-                {item.linkLabel || "Voir"}<ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
+                {item.linkLabel || t("common.view")}<ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
               </a>
             )}
           </motion.div>

@@ -6,8 +6,10 @@ import { navItems } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { asc, eq } from "drizzle-orm";
 
-export async function GET() {
-  const allNavItems = await db.select().from(navItems).orderBy(asc(navItems.orderIndex));
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const allNavItems = await db.select().from(navItems).where(eq(navItems.locale, locale)).orderBy(asc(navItems.orderIndex));
   return NextResponse.json(allNavItems);
 }
 

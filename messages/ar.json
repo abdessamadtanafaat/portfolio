@@ -1,0 +1,164 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "about": "عني",
+    "experience": "الخبرة",
+    "projects": "المشاريع",
+    "skills": "المهارات",
+    "education": "التعليم",
+    "certificates": "الشهادات",
+    "languages": "اللغات",
+    "volunteering": "التطوع",
+    "softSkills": "المهارات الشخصية",
+    "contact": "اتصل بي",
+    "toggleDark": "التبديل إلى الوضع الداكن",
+    "toggleLight": "التبديل إلى الوضع الفاتح",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة"
+  },
+  "hero": {
+    "badge": "متاح للفرص الجديدة",
+    "ctaContact": "تواصل معي",
+    "ctaProjects": "عرض المشاريع",
+    "ctaCv": "تحميل السيرة الذاتية",
+    "scrollDown": "مرر للأسفل",
+    "defaultTagline": "مهندس Full-Stack متخصص في تطبيقات الويب القابلة للتطوير والآمنة والعالية الأداء."
+  },
+  "about": {
+    "badge": "الملف الشخصي",
+    "title": "عني",
+    "description": "مهندس Full-Stack شغوف بخبرة تزيد عن 5 سنوات.",
+    "differentiatorsTitle": "ما يميزني",
+    "cards": {
+      "fullstack": {
+        "title": "تطوير Full-Stack",
+        "description": "تصميم وتطوير تطبيقات الويب من البداية إلى النهاية: البنية التحتية، واجهات برمجة التطبيقات REST/GraphQL، الواجهة التفاعلية، نشر CI/CD."
+      },
+      "cms": {
+        "title": "حلول CMS والتجارة الإلكترونية",
+        "description": "خبرة في Drupal (7/8/9/10)، التحويلات المعقدة، المواقع المتعددة، Headless. حلول تجارة إلكترونية مخصصة وتكاملات ERP/CRM."
+      },
+      "cloud": {
+        "title": "هندسة السحابة والDevOps",
+        "description": "البنية التحتية كرمز (Terraform)، التغليف (Docker/K8s)، CI/CD (GitLab/GitHub Actions)، المراقبة، الأمان."
+      }
+    }
+  },
+  "experience": {
+    "badge": "الخبرة",
+    "title": "المسيرة المهنية",
+    "description": "خبرة تزيد عن 5 سنوات في تطوير التطبيقات الحرجة.",
+    "current": "حالي",
+    "viewLinkedin": "عرض ملف LinkedIn"
+  },
+  "projects": {
+    "badge": "الأعمال",
+    "title": "المشاريع الرئيسية",
+    "description": "بعض المشاريع المُنجزة في الإنتاج، من النموذج الأولي إلى التصنيع.",
+    "viewAll": "عرض جميع المشاريع",
+    "viewProject": "عرض المشروع",
+    "viewOnGithub": "عرض على GitHub",
+    "all": "الكل",
+    "noProjects": "لا توجد مشاريع في هذه الفئة."
+  },
+  "skills": {
+    "badge": "المهارات",
+    "title": "المجموعة التقنية والخبرة",
+    "description": "خبرة شاملة تغطي دورة حياة تطوير البرمجيات بالكامل.",
+    "mainTechs": "التقنيات الرئيسية",
+    "categories": {
+      "frontend": "الواجهة الأمامية",
+      "backend": "الواجهة الخلفية",
+      "cms": "CMS / Drupal",
+      "devops": "DevOps / السحابة",
+      "database": "قواعد البيانات",
+      "tools": "الأدوات والطرق",
+      "testing": "الاختبار"
+    }
+  },
+  "education": {
+    "badge": "التعليم والشهادات",
+    "title": "التعليم والشهادات",
+    "description": "خلفية أكاديمية قوية مكملة بشهادات معترف بها.",
+    "degrees": "الشهادات الأكاديمية",
+    "certifications": "الشهادات المهنية"
+  },
+  "certificates": {
+    "badge": "الشهادات",
+    "title": "الشهادات والتدريب",
+    "description": "شهادات معترف بها عالمياً تثبت الخبرة التقنية.",
+    "certification": "شهادة",
+    "verify": "تحقق",
+    "keepLearning": "مواكبة مستمرة للتقنيات الحديثة"
+  },
+  "languages": {
+    "badge": "اللغات",
+    "title": "المهارات اللغوية",
+    "description": "إتقان اللغات والقدرات على التواصل متعدد اللغات.",
+    "proficiency": "الإتقان"
+  },
+  "volunteering": {
+    "badge": "التطوع",
+    "title": "المشاركة والتطوع",
+    "description": " Engagements associatifs et bénévoles."
+  },
+  "softSkills": {
+    "badge": "المهارات الشخصية والاهتمامات",
+    "title": "المهارات الشخصية والهوايات",
+    "description": "الصفات الإنسانية وال passions qui me définissent.",
+    "softSkillsTitle": "المهارات الشخصية",
+    "hobbiesTitle": "الاهتمامات"
+  },
+  "contact": {
+    "badge": "اتصل بي",
+    "title": "لنعمل معاً",
+    "description": "لديك مشروع في ذهنك؟ لا تتردد في التواصل معي.",
+    "coordinates": "معلومات الاتصال",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "location": "الموقع",
+    "socialMedia": "وسائل التواصل الاجتماعي",
+    "sendMessage": "إرسال رسالة",
+    "sending": "جاري الإرسال...",
+    "send": "إرسال الرسالة",
+    "success": "تم إرسال الرسالة بنجاح! سأرد عليك في أقرب وقت ممكن.",
+    "error": "حدث خطأ. يرجى المحاولة مرة أخرى أو التواصل معي مباشرة عبر البريد الإلكتروني.",
+    "validation": {
+      "required": "الحقل {field} مطلوب",
+      "email": "تنسيق البريد الإلكتروني غير صالح",
+      "messageMin": "يجب أن تحتوي الرسالة على 20 حرفاً على الأقل",
+      "nameMin": "يجب أن يحتوي الاسم على حرفين على الأقل",
+      "subjectMin": "يجب أن يحتوي الموضوع على 5 أحرف على الأقل"
+    }
+  },
+  "footer": {
+    "description": "مهندس Full-Stack شغوف بإنشاء تطبيقات ويب قوية وقابلة للتطوير.",
+    "navigation": "التنقل",
+    "contact": "اتصل بي",
+    "technologies": "التقنيات",
+    "copyright": "جميع الحقوق محفوظة."
+  },
+  "maintenance": {
+    "title": "الموقع في وضع الصيانة",
+    "message": "موقعنا حالياً في وضع الصيانة. سنعود قريباً جداً. شكراً لصبركم."
+  },
+  "projectsPage": {
+    "badge": "الأعمال",
+    "title": "المشاريع",
+    "description": "جميع المشاريع المُنجزة في الإنتاج، من النموذج الأولي إلى التصنيع.",
+    "all": "الكل",
+    "noProjects": "لا توجد مشاريع في هذه الفئة."
+  },
+  "projectDetail": {
+    "backToProjects": "العودة للمشاريع",
+    "details": "التفاصيل",
+    "technologies": "التقنيات",
+    "liveDemo": "عرض مباشر",
+    "sourceCode": "الكود المصدري"
+  },
+  "common": {
+    "viewMore": "اعرف المزيد",
+    "view": "عرض",
+    "loading": "جاري التحميل..."
+  }
+}

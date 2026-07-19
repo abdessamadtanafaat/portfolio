@@ -6,23 +6,16 @@ import { Code, Database, Server, Terminal, Layers } from "lucide-react";
 import { Tool } from "@/components/icons";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Skill, HomepageContent, Technology } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface SkillsProps {
   skills: Skill[];
   homepage: HomepageContent | null;
   technologies: Technology[];
 }
-
-const categoryConfig: Record<string, { label: string; icon: React.ElementType; color: string; bg: string }> = {
-  frontend: { label: "Frontend", icon: Code, color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-900/30" },
-  backend: { label: "Backend", icon: Server, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/30" },
-  cms: { label: "CMS / Drupal", icon: Layers, color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-900/30" },
-  devops: { label: "DevOps / Cloud", icon: Terminal, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/30" },
-  database: { label: "Bases de données", icon: Database, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/30" },
-  tools: { label: "Outils & Méthodes", icon: Tool, color: "text-slate-600 dark:text-slate-400", bg: "bg-slate-100 dark:bg-slate-800" },
-  testing: { label: "Testing", icon: Code, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-50 dark:bg-rose-900/30" },
-};
 
 const categoryOrder = ["frontend", "backend", "cms", "devops", "database", "tools", "testing"];
 
@@ -32,6 +25,18 @@ function proficiencyToPercent(level: number): number {
 }
 
 export function Skills({ skills, homepage, technologies }: SkillsProps) {
+  const { t } = useTranslations();
+
+  const categoryConfig: Record<string, { label: string; icon: React.ElementType; color: string; bg: string }> = {
+    frontend: { label: t("skills.categories.frontend"), icon: Code, color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-900/30" },
+    backend: { label: t("skills.categories.backend"), icon: Server, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/30" },
+    cms: { label: t("skills.categories.cms"), icon: Layers, color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-900/30" },
+    devops: { label: t("skills.categories.devops"), icon: Terminal, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/30" },
+    database: { label: t("skills.categories.database"), icon: Database, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/30" },
+    tools: { label: t("skills.categories.tools"), icon: Tool, color: "text-slate-600 dark:text-slate-400", bg: "bg-slate-100 dark:bg-slate-800" },
+    testing: { label: t("skills.categories.testing"), icon: Code, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-50 dark:bg-rose-900/30" },
+  };
+
   const skillCategories = categoryOrder
     .filter((key) => skills.some((s) => s.category === key))
     .map((key) => ({
@@ -44,17 +49,19 @@ export function Skills({ skills, homepage, technologies }: SkillsProps) {
 
   return (
     <section id="skills" className="section-padding relative mesh-gradient">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.skillsBadge || "Compétences"}
+              {homepage?.skillsBadge || t("skills.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.skillsTitle || "Stack technique & Expertise"}
+              {homepage?.skillsTitle || t("skills.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.skillsDescription || "Une expertise transversale couvrant tout le cycle de vie du développement logiciel."}
+              {homepage?.skillsDescription || t("skills.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -104,7 +111,7 @@ export function Skills({ skills, homepage, technologies }: SkillsProps) {
         {primaryTechs.length > 0 && (
           <ScrollReveal delay={0.4} className="mt-14">
             <h3 className="text-xl font-bold text-center text-slate-900 dark:text-white mb-6">
-              Technologies principales
+              {t("skills.mainTechs")}
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-2">
               {primaryTechs.map((tech) => (

@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import { Globe } from "lucide-react";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Language, HomepageContent } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface LanguagesProps {
   languages: Language[];
@@ -13,21 +16,24 @@ interface LanguagesProps {
 }
 
 export function Languages({ languages, homepage }: LanguagesProps) {
+  const { t } = useTranslations();
   if (languages.length === 0) return null;
 
   return (
     <section id="languages" className="section-padding relative mesh-gradient">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.languagesBadge || "Langues"}
+              {homepage?.languagesBadge || t("languages.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.languagesTitle || "Compétences linguistiques"}
+              {homepage?.languagesTitle || t("languages.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.languagesDescription || "Maîtrise des langues et capacités de communication multilingue."}
+              {homepage?.languagesDescription || t("languages.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -52,7 +58,7 @@ export function Languages({ languages, homepage }: LanguagesProps) {
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-400 dark:text-slate-500">Maîtrise</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500">{t("languages.proficiency")}</span>
                       <span className="text-xs font-medium text-slate-600 dark:text-slate-300 tabular-nums">
                         {lang.proficiency}%
                       </span>

@@ -23,6 +23,7 @@ interface DataTableProps<T> {
   emptyMessage?: string;
   emptyCta?: string;
   onReorder?: (reorderedItems: T[]) => void;
+  headerAction?: React.ReactNode;
 }
 
 export function DataTable<T extends Record<string, unknown>>({
@@ -37,6 +38,7 @@ export function DataTable<T extends Record<string, unknown>>({
   emptyMessage = "No items yet.",
   emptyCta,
   onReorder,
+  headerAction,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState("");
   const [items, setItems] = useState<T[]>(data);
@@ -117,13 +119,16 @@ export function DataTable<T extends Record<string, unknown>>({
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>}
         </div>
-        <Link
-          href={newHref}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 active:bg-slate-700 transition-all duration-150 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 dark:focus-visible:ring-white"
-        >
-          <Plus className="h-4 w-4" />
-          {newLabel}
-        </Link>
+        <div className="flex items-center gap-3">
+          {headerAction}
+          <Link
+            href={newHref}
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 active:bg-slate-700 transition-all duration-150 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 dark:focus-visible:ring-white"
+          >
+            <Plus className="h-4 w-4" />
+            {newLabel}
+          </Link>
+        </div>
       </div>
 
       {data.length > 0 && (

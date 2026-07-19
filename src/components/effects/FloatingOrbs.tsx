@@ -9,10 +9,10 @@ interface FloatingOrbsProps {
 }
 
 const orbColors = [
-  "bg-brand-500/[0.07] dark:bg-brand-400/[0.09]",
-  "bg-violet-500/[0.05] dark:bg-violet-400/[0.07]",
-  "bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06]",
-  "bg-amber-500/[0.05] dark:bg-amber-400/[0.07]",
+  "bg-brand-500/[0.38] dark:bg-brand-400/[0.09]",
+  "bg-violet-500/[0.30] dark:bg-violet-400/[0.07]",
+  "bg-emerald-500/[0.25] dark:bg-emerald-400/[0.06]",
+  "bg-amber-500/[0.32] dark:bg-amber-400/[0.07]",
 ];
 
 const orbSizes = [
@@ -58,7 +58,7 @@ export function HeroOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-500/[0.06] dark:bg-brand-400/[0.08] rounded-full blur-[100px]"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-500/[0.35] dark:bg-brand-400/[0.08] rounded-full blur-[100px]"
         animate={{
           x: [0, 40, -20, 0],
           y: [0, -30, 20, 0],
@@ -67,7 +67,7 @@ export function HeroOrbs() {
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-violet-500/[0.04] dark:bg-violet-400/[0.06] rounded-full blur-[100px]"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-violet-500/[0.28] dark:bg-violet-400/[0.06] rounded-full blur-[100px]"
         animate={{
           x: [0, -30, 20, 0],
           y: [0, 25, -15, 0],
@@ -76,7 +76,7 @@ export function HeroOrbs() {
         transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] bg-emerald-500/[0.03] dark:bg-emerald-400/[0.05] rounded-full blur-[100px]"
+        className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] bg-emerald-500/[0.24] dark:bg-emerald-400/[0.05] rounded-full blur-[100px]"
         animate={{
           x: [0, 20, -25, 0],
           y: [0, -20, 15, 0],

@@ -18,22 +18,38 @@ import {
   languages,
   volunteering,
   softSkills,
+  navItems,
+  formFields,
+  formSettings,
+  customSections,
+  customSectionItems,
 } from "./schema";
 import { eq, desc, asc, and, or, ilike, sql } from "drizzle-orm";
 
-// Personal Info (Singleton)
-export async function getPersonalInfo() {
+// Personal Info
+export async function getPersonalInfo(locale?: string) {
+  if (locale) {
+    const result = await db.select().from(personalInfo).where(eq(personalInfo.locale, locale)).get();
+    if (result) return result;
+    return db.select().from(personalInfo).where(eq(personalInfo.locale, "en")).get();
+  }
   return db.select().from(personalInfo).get();
 }
 
+export async function getAllPersonalInfo() {
+  return db.select().from(personalInfo).all();
+}
+
 export async function updatePersonalInfo(data: Partial<typeof personalInfo.$inferInsert>) {
-  const existing = await getPersonalInfo();
+  const locale = data.locale || "en";
+  const existing = await db.select().from(personalInfo).where(eq(personalInfo.locale, locale)).get();
   if (existing) {
-    return db.update(personalInfo).set({ ...data, updatedAt: Date.now() }).where(eq(personalInfo.id, 1)).run();
+    return db.update(personalInfo).set({ ...data, updatedAt: Date.now() }).where(eq(personalInfo.id, existing.id)).run();
   }
   return db.insert(personalInfo).values({
     name: data.name ?? "",
     title: data.title ?? "",
+    locale,
     tagline: data.tagline ?? null,
     bio: data.bio ?? null,
     location: data.location ?? null,
@@ -46,40 +62,63 @@ export async function updatePersonalInfo(data: Partial<typeof personalInfo.$infe
   }).run();
 }
 
-// Site Settings (Singleton)
-export async function getSiteSettings() {
+// Site Settings
+export async function getSiteSettings(locale?: string) {
+  if (locale) {
+    const result = await db.select().from(siteSettings).where(eq(siteSettings.locale, locale)).get();
+    if (result) return result;
+    return db.select().from(siteSettings).where(eq(siteSettings.locale, "en")).get();
+  }
   return db.select().from(siteSettings).get();
 }
 
+export async function getAllSiteSettings() {
+  return db.select().from(siteSettings).all();
+}
+
 export async function updateSiteSettings(data: Partial<typeof siteSettings.$inferInsert>) {
-  const existing = await getSiteSettings();
+  const locale = data.locale || "en";
+  const existing = await db.select().from(siteSettings).where(eq(siteSettings.locale, locale)).get();
   if (existing) {
-    return db.update(siteSettings).set({ ...data, updatedAt: Date.now() }).where(eq(siteSettings.id, 1)).run();
+    return db.update(siteSettings).set({ ...data, updatedAt: Date.now() }).where(eq(siteSettings.id, existing.id)).run();
   }
   return db.insert(siteSettings).values({
     siteName: data.siteName ?? "Portfolio",
+    locale,
     faviconUrl: data.faviconUrl ?? null,
     defaultOgImageUrl: data.defaultOgImageUrl ?? null,
     analyticsId: data.analyticsId ?? null,
     contactFormEndpoint: data.contactFormEndpoint ?? null,
-    id: 1,
+    maintenanceMode: data.maintenanceMode ?? false,
+    maintenanceMessage: data.maintenanceMessage ?? null,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   }).run();
 }
 
-// Homepage Content (Singleton)
-export async function getHomepageContent() {
+// Homepage Content
+export async function getHomepageContent(locale?: string) {
+  if (locale) {
+    const result = await db.select().from(homepageContent).where(eq(homepageContent.locale, locale)).get();
+    if (result) return result;
+    return db.select().from(homepageContent).where(eq(homepageContent.locale, "en")).get();
+  }
   return db.select().from(homepageContent).get();
 }
 
+export async function getAllHomepageContent() {
+  return db.select().from(homepageContent).all();
+}
+
 export async function updateHomepageContent(data: Partial<typeof homepageContent.$inferInsert>) {
-  const existing = await getHomepageContent();
+  const locale = data.locale || "en";
+  const existing = await db.select().from(homepageContent).where(eq(homepageContent.locale, locale)).get();
   if (existing) {
-    return db.update(homepageContent).set({ ...data, updatedAt: Date.now() }).where(eq(homepageContent.id, 1)).run();
+    return db.update(homepageContent).set({ ...data, updatedAt: Date.now() }).where(eq(homepageContent.id, existing.id)).run();
   }
   return db.insert(homepageContent).values({
     heroHeadline: data.heroHeadline ?? "Welcome",
+    locale,
     heroSubtext: data.heroSubtext ?? null,
     heroCtaText: data.heroCtaText ?? null,
     heroCtaUrl: data.heroCtaUrl ?? null,
@@ -91,18 +130,33 @@ export async function updateHomepageContent(data: Partial<typeof homepageContent
 }
 
 // SEO Settings
-export async function getAllSeoSettings() {
+export async function getAllSeoSettings(locale?: string) {
+  if (locale) {
+    return db.select().from(seoSettings).where(eq(seoSettings.locale, locale)).all();
+  }
   return db.select().from(seoSettings).all();
 }
 
-export async function getSeoSetting(pagePath: string) {
+export async function getSeoSetting(pagePath: string, locale?: string) {
+  if (locale) {
+    const result = await db.select().from(seoSettings)
+      .where(and(eq(seoSettings.pagePath, pagePath), eq(seoSettings.locale, locale)))
+      .get();
+    if (result) return result;
+    return db.select().from(seoSettings)
+      .where(and(eq(seoSettings.pagePath, pagePath), eq(seoSettings.locale, "en")))
+      .get() ?? null;
+  }
   return db.select().from(seoSettings).where(eq(seoSettings.pagePath, pagePath)).get();
 }
 
 export async function upsertSeoSetting(data: typeof seoSettings.$inferInsert) {
-  const existing = await getSeoSetting(data.pagePath);
+  const locale = data.locale || "en";
+  const existing = await db.select().from(seoSettings)
+    .where(and(eq(seoSettings.pagePath, data.pagePath), eq(seoSettings.locale, locale)))
+    .get();
   if (existing) {
-    return db.update(seoSettings).set({ ...data, updatedAt: Date.now() }).where(eq(seoSettings.pagePath, data.pagePath)).run();
+    return db.update(seoSettings).set({ ...data, updatedAt: Date.now() }).where(eq(seoSettings.id, existing.id)).run();
   }
   return db.insert(seoSettings).values({ ...data, createdAt: Date.now(), updatedAt: Date.now() }).returning().get();
 }
@@ -119,6 +173,7 @@ export async function getProjects(options?: {
   category?: string;
   status?: string;
   featured?: boolean;
+  locale?: string;
   sortBy?: "orderIndex" | "createdAt" | "updatedAt" | "title";
   sortOrder?: "asc" | "desc";
 }) {
@@ -129,6 +184,9 @@ export async function getProjects(options?: {
   let query = db.select().from(projects);
   const conditions = [];
 
+  if (options?.locale) {
+    conditions.push(eq(projects.locale, options.locale));
+  }
   if (options?.search) {
     conditions.push(
       or(
@@ -152,10 +210,6 @@ export async function getProjects(options?: {
     query = query.where(and(...conditions)) as typeof query;
   }
 
-  // Skip orderBy for type stability - sort in memory instead
-  // const sortOrder = options?.sortOrder ?? "asc";
-  // query = query.orderBy(sortOrder === "asc" ? asc(projects.orderIndex) : desc(projects.orderIndex));
-
   const total = await db.select({ count: sql`count(*)` }).from(projects).get();
   const items = await query.limit(pageSize).offset(offset).all();
 
@@ -172,12 +226,21 @@ export async function getProjectById(id: number) {
   return db.select().from(projects).where(eq(projects.id, id)).get();
 }
 
-export async function getProjectBySlug(slug: string) {
+export async function getProjectBySlug(slug: string, locale?: string) {
+  if (locale) {
+    const result = await db.select().from(projects)
+      .where(and(eq(projects.slug, slug), eq(projects.locale, locale)))
+      .get();
+    if (result) return result;
+    return db.select().from(projects)
+      .where(and(eq(projects.slug, slug), eq(projects.locale, "en")))
+      .get();
+  }
   return db.select().from(projects).where(eq(projects.slug, slug)).get();
 }
 
-export async function getProjectWithDetails(slug: string) {
-  const project = await getProjectBySlug(slug);
+export async function getProjectWithDetails(slug: string, locale?: string) {
+  const project = await getProjectBySlug(slug, locale);
   if (!project) return null;
 
   const [images, techs] = await Promise.all([
@@ -296,7 +359,10 @@ export async function reorderSkills(items: { id: number; order: number }[]) {
 }
 
 // Experiences
-export async function getAllExperiences() {
+export async function getAllExperiences(locale?: string) {
+  if (locale) {
+    return db.select().from(experiences).where(eq(experiences.locale, locale)).orderBy(desc(experiences.startDate)).all();
+  }
   return db.select().from(experiences).orderBy(desc(experiences.startDate)).all();
 }
 
@@ -313,7 +379,10 @@ export async function deleteExperience(id: number) {
 }
 
 // Education
-export async function getAllEducation() {
+export async function getAllEducation(locale?: string) {
+  if (locale) {
+    return db.select().from(education).where(eq(education.locale, locale)).orderBy(desc(education.startDate)).all();
+  }
   return db.select().from(education).orderBy(desc(education.startDate)).all();
 }
 
@@ -377,7 +446,10 @@ export async function updateAdminUserLastLogin(id: number) {
 }
 
 // Differentiators
-export async function getAllDifferentiators() {
+export async function getAllDifferentiators(locale?: string) {
+  if (locale) {
+    return db.select().from(differentiators).where(eq(differentiators.locale, locale)).orderBy(asc(differentiators.orderIndex)).all();
+  }
   return db.select().from(differentiators).orderBy(asc(differentiators.orderIndex)).all();
 }
 
@@ -401,7 +473,10 @@ export async function reorderDifferentiators(items: { id: number; order: number 
 }
 
 // Languages
-export async function getAllLanguages() {
+export async function getAllLanguages(locale?: string) {
+  if (locale) {
+    return db.select().from(languages).where(eq(languages.locale, locale)).orderBy(asc(languages.orderIndex)).all();
+  }
   return db.select().from(languages).orderBy(asc(languages.orderIndex)).all();
 }
 
@@ -429,7 +504,10 @@ export async function reorderLanguages(items: { id: number; order: number }[]) {
 }
 
 // Volunteering
-export async function getAllVolunteering() {
+export async function getAllVolunteering(locale?: string) {
+  if (locale) {
+    return db.select().from(volunteering).where(eq(volunteering.locale, locale)).orderBy(asc(volunteering.orderIndex)).all();
+  }
   return db.select().from(volunteering).orderBy(asc(volunteering.orderIndex)).all();
 }
 
@@ -442,7 +520,7 @@ export async function createVolunteering(data: typeof volunteering.$inferInsert)
 }
 
 export async function updateVolunteering(id: number, data: Partial<typeof volunteering.$inferInsert>) {
-  return db.update(volunteering).set(data).where(eq(volunteering.id, id)).returning().get();
+  return db.update(volunteering).set({ ...data }).where(eq(volunteering.id, id)).returning().get();
 }
 
 export async function deleteVolunteering(id: number) {
@@ -457,7 +535,10 @@ export async function reorderVolunteering(items: { id: number; order: number }[]
 }
 
 // Soft Skills
-export async function getAllSoftSkills() {
+export async function getAllSoftSkills(locale?: string) {
+  if (locale) {
+    return db.select().from(softSkills).where(eq(softSkills.locale, locale)).orderBy(asc(softSkills.orderIndex)).all();
+  }
   return db.select().from(softSkills).orderBy(asc(softSkills.orderIndex)).all();
 }
 
@@ -480,6 +561,165 @@ export async function deleteSoftSkill(id: number) {
 export async function reorderSoftSkills(items: { id: number; order: number }[]) {
   for (const item of items) {
     await db.update(softSkills).set({ orderIndex: item.order }).where(eq(softSkills.id, item.id)).run();
+  }
+  return { updated: items.length };
+}
+
+// Nav Items
+export async function getAllNavItems(locale?: string) {
+  if (locale) {
+    return db.select().from(navItems).where(eq(navItems.locale, locale)).orderBy(asc(navItems.orderIndex)).all();
+  }
+  return db.select().from(navItems).orderBy(asc(navItems.orderIndex)).all();
+}
+
+export async function getNavItem(id: number) {
+  return db.select().from(navItems).where(eq(navItems.id, id)).get();
+}
+
+export async function createNavItem(data: typeof navItems.$inferInsert) {
+  return db.insert(navItems).values({ ...data, createdAt: Date.now() }).returning().get();
+}
+
+export async function updateNavItem(id: number, data: Partial<typeof navItems.$inferInsert>) {
+  return db.update(navItems).set(data).where(eq(navItems.id, id)).returning().get();
+}
+
+export async function deleteNavItem(id: number) {
+  return db.delete(navItems).where(eq(navItems.id, id)).run();
+}
+
+export async function reorderNavItems(items: { id: number; order: number }[]) {
+  for (const item of items) {
+    await db.update(navItems).set({ orderIndex: item.order }).where(eq(navItems.id, item.id)).run();
+  }
+  return { updated: items.length };
+}
+
+// Form Fields
+export async function getAllFormFields(locale?: string) {
+  if (locale) {
+    return db.select().from(formFields).where(eq(formFields.locale, locale)).orderBy(asc(formFields.orderIndex)).all();
+  }
+  return db.select().from(formFields).orderBy(asc(formFields.orderIndex)).all();
+}
+
+export async function getFormField(id: number) {
+  return db.select().from(formFields).where(eq(formFields.id, id)).get();
+}
+
+export async function createFormField(data: typeof formFields.$inferInsert) {
+  return db.insert(formFields).values({ ...data, createdAt: Date.now() }).returning().get();
+}
+
+export async function updateFormField(id: number, data: Partial<typeof formFields.$inferInsert>) {
+  return db.update(formFields).set(data).where(eq(formFields.id, id)).returning().get();
+}
+
+export async function deleteFormField(id: number) {
+  return db.delete(formFields).where(eq(formFields.id, id)).run();
+}
+
+export async function reorderFormFields(items: { id: number; order: number }[]) {
+  for (const item of items) {
+    await db.update(formFields).set({ orderIndex: item.order }).where(eq(formFields.id, item.id)).run();
+  }
+  return { updated: items.length };
+}
+
+// Form Settings
+export async function getFormSettings(locale?: string) {
+  if (locale) {
+    const result = await db.select().from(formSettings).where(eq(formSettings.locale, locale)).get();
+    if (result) return result;
+    return db.select().from(formSettings).where(eq(formSettings.locale, "en")).get();
+  }
+  return db.select().from(formSettings).get();
+}
+
+export async function getAllFormSettings() {
+  return db.select().from(formSettings).all();
+}
+
+export async function updateFormSettings(data: Partial<typeof formSettings.$inferInsert>) {
+  const locale = data.locale || "en";
+  const formType = data.formType || "contact";
+  const existing = await db.select().from(formSettings)
+    .where(and(eq(formSettings.locale, locale), eq(formSettings.formType, formType)))
+    .get();
+  if (existing) {
+    return db.update(formSettings).set({ ...data, updatedAt: Date.now() }).where(eq(formSettings.id, existing.id)).run();
+  }
+  return db.insert(formSettings).values({
+    formType,
+    locale,
+    submitButtonText: data.submitButtonText ?? "Send message",
+    loadingButtonText: data.loadingButtonText ?? "Sending...",
+    successMessage: data.successMessage ?? "Message sent successfully!",
+    errorMessage: data.errorMessage ?? "An error occurred. Please try again.",
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }).run();
+}
+
+// Custom Sections
+export async function getAllCustomSections(locale?: string) {
+  if (locale) {
+    return db.select().from(customSections).where(eq(customSections.locale, locale)).orderBy(asc(customSections.orderIndex)).all();
+  }
+  return db.select().from(customSections).orderBy(asc(customSections.orderIndex)).all();
+}
+
+export async function getCustomSection(id: number) {
+  return db.select().from(customSections).where(eq(customSections.id, id)).get();
+}
+
+export async function createCustomSection(data: typeof customSections.$inferInsert) {
+  return db.insert(customSections).values({ ...data, createdAt: Date.now(), updatedAt: Date.now() }).returning().get();
+}
+
+export async function updateCustomSection(id: number, data: Partial<typeof customSections.$inferInsert>) {
+  return db.update(customSections).set({ ...data, updatedAt: Date.now() }).where(eq(customSections.id, id)).returning().get();
+}
+
+export async function deleteCustomSection(id: number) {
+  return db.delete(customSections).where(eq(customSections.id, id)).run();
+}
+
+export async function reorderCustomSections(items: { id: number; order: number }[]) {
+  for (const item of items) {
+    await db.update(customSections).set({ orderIndex: item.order }).where(eq(customSections.id, item.id)).run();
+  }
+  return { updated: items.length };
+}
+
+// Custom Section Items
+export async function getAllCustomSectionItems(sectionId?: number) {
+  if (sectionId) {
+    return db.select().from(customSectionItems).where(eq(customSectionItems.sectionId, sectionId)).orderBy(asc(customSectionItems.orderIndex)).all();
+  }
+  return db.select().from(customSectionItems).orderBy(asc(customSectionItems.orderIndex)).all();
+}
+
+export async function getCustomSectionItem(id: number) {
+  return db.select().from(customSectionItems).where(eq(customSectionItems.id, id)).get();
+}
+
+export async function createCustomSectionItem(data: typeof customSectionItems.$inferInsert) {
+  return db.insert(customSectionItems).values({ ...data, createdAt: Date.now() }).returning().get();
+}
+
+export async function updateCustomSectionItem(id: number, data: Partial<typeof customSectionItems.$inferInsert>) {
+  return db.update(customSectionItems).set(data).where(eq(customSectionItems.id, id)).returning().get();
+}
+
+export async function deleteCustomSectionItem(id: number) {
+  return db.delete(customSectionItems).where(eq(customSectionItems.id, id)).run();
+}
+
+export async function reorderCustomSectionItems(sectionId: number, items: { id: number; order: number }[]) {
+  for (const item of items) {
+    await db.update(customSectionItems).set({ orderIndex: item.order }).where(eq(customSectionItems.id, item.id)).run();
   }
   return { updated: items.length };
 }

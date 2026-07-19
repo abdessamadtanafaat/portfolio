@@ -4,10 +4,12 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { seoSettings } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
-export async function GET() {
-  const all = await db.select().from(seoSettings).all();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const all = await db.select().from(seoSettings).where(eq(seoSettings.locale, locale)).all();
   return NextResponse.json(all);
 }
 
@@ -16,6 +18,7 @@ export async function PUT(request: Request) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
+  const locale = body.locale || "en";
   const now = Math.floor(Date.now() / 1000);
 
   if (body.id) {
@@ -23,7 +26,13 @@ export async function PUT(request: Request) {
     return NextResponse.json(result);
   }
 
-  const result = await db.insert(seoSettings).values({ ...body, createdAt: now, updatedAt: now }).returning().get();
+  const existing = await db.select().from(seoSettings).where(and(eq(seoSettings.pagePath, body.pagePath), eq(seoSettings.locale, locale))).get();
+  if (existing) {
+    const result = await db.update(seoSettings).set({ ...body, updatedAt: now }).where(eq(seoSettings.id, existing.id)).returning().get();
+    return NextResponse.json(result);
+  }
+
+  const result = await db.insert(seoSettings).values({ ...body, locale, createdAt: now, updatedAt: now }).returning().get();
   return NextResponse.json(result, { status: 201 });
 }
 

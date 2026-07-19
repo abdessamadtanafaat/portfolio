@@ -6,7 +6,10 @@ import { Linkedin } from "@/components/icons";
 import Link from "next/link";
 import { formatExperienceDate, parseJsonArray } from "@/lib/queries/portfolio";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { GradientOrbs } from "@/components/effects/GradientOrbs";
+import { HeroOrbs } from "@/components/effects/FloatingOrbs";
 import type { Experience, HomepageContent, SocialLink } from "@/lib/queries/portfolio";
+import { useTranslations } from "@/i18n/useTranslations";
 
 interface ExperienceProps {
   experiences: Experience[];
@@ -15,21 +18,24 @@ interface ExperienceProps {
 }
 
 export function Experience({ experiences, homepage, socialLinks }: ExperienceProps) {
+  const { t } = useTranslations();
   const linkedin = socialLinks.find((l) => l.platform === "linkedin");
 
   return (
     <section id="experience" className="section-padding relative mesh-gradient">
+      <HeroOrbs />
+      <GradientOrbs />
       <div className="mx-auto max-w-6xl container-px">
         <ScrollReveal>
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full dark:bg-brand-900/30 dark:text-brand-400 mb-4 border border-brand-200/50 dark:border-brand-800/30">
-              {homepage?.experienceBadge || "Expérience"}
+              {homepage?.experienceBadge || t("experience.badge")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              {homepage?.experienceTitle || "Parcours professionnel"}
+              {homepage?.experienceTitle || t("experience.title")}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              {homepage?.experienceDescription || "5+ années d'expérience dans le développement d'applications critiques."}
+              {homepage?.experienceDescription || t("experience.description")}
             </p>
           </div>
         </ScrollReveal>
@@ -52,7 +58,7 @@ export function Experience({ experiences, homepage, socialLinks }: ExperiencePro
               className="btn-secondary gap-2.5"
             >
               <Linkedin className="h-4 w-4" />
-              Voir mon profil LinkedIn
+              {t("experience.viewLinkedin")}
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
           </ScrollReveal>
@@ -63,6 +69,7 @@ export function Experience({ experiences, homepage, socialLinks }: ExperiencePro
 }
 
 function ExperienceCard({ exp, index }: { exp: Experience; index: number }) {
+  const { t, locale } = useTranslations();
   const highlights = parseJsonArray(exp.highlights);
   const technologies = parseJsonArray(exp.technologies);
 
@@ -74,7 +81,7 @@ function ExperienceCard({ exp, index }: { exp: Experience; index: number }) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
-                {formatExperienceDate(exp.startDate, exp.endDate, exp.current)} &bull; {exp.location}
+                {formatExperienceDate(exp.startDate, exp.endDate, exp.current, locale)} &bull; {exp.location}
               </p>
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{exp.role}</h3>
               <p className="text-brand-600 dark:text-brand-400 font-medium text-sm">{exp.company}</p>
@@ -85,7 +92,7 @@ function ExperienceCard({ exp, index }: { exp: Experience; index: number }) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
-                Actuel
+                {t("experience.current")}
               </span>
             )}
           </div>

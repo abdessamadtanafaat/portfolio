@@ -6,8 +6,10 @@ import { formFields } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { asc, eq } from "drizzle-orm";
 
-export async function GET() {
-  const allFormFields = await db.select().from(formFields).orderBy(asc(formFields.orderIndex));
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locale = searchParams.get("locale") || "en";
+  const allFormFields = await db.select().from(formFields).where(eq(formFields.locale, locale)).orderBy(asc(formFields.orderIndex));
   return NextResponse.json(allFormFields);
 }
 
