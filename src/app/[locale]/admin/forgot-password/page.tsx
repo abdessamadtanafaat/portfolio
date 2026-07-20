@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm p-6">
-          {result?.success ? (
+          {result?.success && result.message ? (
             <div className="text-center">
               <MailCheck className="h-10 w-10 mx-auto text-emerald-500 mb-4" />
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{result.message}</p>

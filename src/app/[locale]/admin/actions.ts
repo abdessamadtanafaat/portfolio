@@ -117,9 +117,11 @@ export async function requestPasswordResetAction(
     }
   }
 
+  // Email does not exist: do NOT send anything and do NOT surface a message
+  // (avoids revealing account existence). The page shows nothing.
   return {
     success: true,
-    message: "Si cet email existe, un lien de réinitialisation a été envoyé.",
+    message: "",
   };
 }
 
@@ -195,11 +197,19 @@ export async function loginAction(
   }
 
   try {
-    await signIn("credentials", {
+    // Use redirect:false so signIn returns a result instead of throwing a
+    // NEXT_REDIRECT. The client performs the navigation, which avoids a brief
+    // "Invalid email or password" flash on successful login.
+    const res = await signIn("credentials", {
       identifier: email,
       password,
-      redirectTo: callbackUrl,
+      redirect: false,
     });
+
+    if (res?.error) {
+      return { success: false, error: "Email ou mot de passe incorrect" };
+    }
+
     loginAttempts.delete(email.toLowerCase());
     return { success: true };
   } catch (error) {
