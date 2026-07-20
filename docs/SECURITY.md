@@ -14,6 +14,7 @@ This document describes the security model of the portfolio/CMS and the findings
 | API auth | Every mutation (`POST/PUT/DELETE`) checks `auth()` → 401 | ✅ |
 | Input validation | Zod schemas on contact + API write paths | ✅ |
 | Secrets | `.env*.local` git-ignored; `NEXTAUTH_SECRET` for JWT | ✅ |
+| Password reset | Reset tokens hashed (SHA-256), 1h TTL, single-use, cleared after reset | ✅ |
 | Headers | `X-Content-Type-Options: nosniff`, `Referrer-Policy`, DNS prefetch via `next.config.mjs` | ✅ Basic |
 | Markdown rendering | `react-markdown` + `rehype-sanitize` where used | ✅ |
 

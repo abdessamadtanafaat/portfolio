@@ -36,6 +36,13 @@ function ts(dateStr: string): number {
 const LOCALES = ["en", "fr", "ar"] as const;
 
 async function seed() {
+  // Idempotent: if the site already has content, do not wipe CMS edits.
+  const existing = await db.select({ id: personalInfo.id }).from(personalInfo).limit(1).all();
+  if (existing.length > 0) {
+    console.log("Database already seeded — skipping to preserve existing content.");
+    return;
+  }
+
   console.log("Clearing existing data...");
   await db.delete(projectTechnologies).run();
   await db.delete(socialLinks).run();
@@ -68,6 +75,7 @@ async function seed() {
   const passwordHash = await hashPassword("admin123");
   await db.insert(adminUser).values({
     email: "admin@portfolio.com",
+    username: "admin",
     passwordHash,
     name: "Abdessamad Tanafaat",
     createdAt: now,

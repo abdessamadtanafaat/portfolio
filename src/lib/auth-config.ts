@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import { adminUser } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { verifyPassword } from "@/lib/password";
 
 declare module "next-auth" {
@@ -31,16 +31,21 @@ const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: { label: "Email", type: "email" },
+        identifier: { label: "Email or username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.identifier || !credentials?.password) return null;
 
         const user = await db
           .select()
           .from(adminUser)
-          .where(eq(adminUser.email, credentials.email as string))
+          .where(
+            or(
+              eq(adminUser.email, credentials.identifier as string),
+              eq(adminUser.username, credentials.identifier as string)
+            )
+          )
           .get();
 
         if (!user || !(await verifyPassword(credentials.password as string, user.passwordHash))) {

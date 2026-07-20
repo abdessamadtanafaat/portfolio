@@ -78,12 +78,32 @@ npm run db:seed    # Create admin user + sample data
 
 **Production (Turso):**
 
+> `drizzle.config.ts` automatically uses `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` from the
+> environment when present, falling back to the local `file:local.db` otherwise. Make sure the
+> **same Turso database** is referenced both locally (`.env.local`) and in the Vercel project
+> environment variables — a mismatch is the #1 cause of `no such table` runtime errors.
+
 ```bash
-# Create a Turso database at https://turso.tech
-# Then push schema:
-TURSO_DATABASE_URL=libsql://your-db.turso.io TURSO_AUTH_TOKEN=your-token npm run db:push
+# 1. Point drizzle at Turso and push the schema (non-interactive):
+npm run db:push -- --force
+#    or: TURSO_DATABASE_URL=libsql://your-db.turso.io TURSO_AUTH_TOKEN=your-token npx drizzle-kit push --force
+
+# 2. Seed admin user + sample content into that same Turso database:
 npm run db:seed
+
+# 3. Verify the connection:
+npm run db:verify
 ```
+
+If the live site returns `500 no such table: …`, it means the app's `TURSO_DATABASE_URL`
+(Vercel env) points to a database whose schema was never pushed/seeded — re-run the two
+commands above with the **exact same** credentials as Vercel, then redeploy.
+
+> **Auto-provisioning:** the project defines a `vercel-build` script
+> (`drizzle-kit push --force && tsx scripts/seed.ts && next build`). On Vercel, this pushes
+> the schema to Turso **and** seeds initial content (only if empty) automatically on every
+> deploy, so a brand-new database never 500s. `scripts/seed.ts` is idempotent — it skips when
+> `personal_info` already has rows, so your CMS edits are never wiped.
 
 ### 4. Build and run
 
@@ -212,13 +232,25 @@ npm run db:studio
 
 ### Resetting Password
 
-```bash
-# Generate hash for new password
-node -e "const b = require('bcryptjs'); console.log(b.hashSync('new-password', 12))"
+**Option A — Self-service (recommended):**
+1. Go to `/en/admin/forgot-password` (link on the login page).
+2. Enter your admin email.
+3. If **Resend is configured**, a reset link (valid 1 hour, single-use) is emailed to you.
+4. If **Resend is NOT configured** (personal/free setup), the page displays the reset token directly — use it on `/en/admin/reset-password?token=…`.
 
-# Update in database via Drizzle Studio
-npm run db:studio
-# Update password_hash in admin_user table
+Tokens are stored hashed (SHA-256) with a 1-hour expiry and are cleared after use.
+
+**Option B — CLI (anytime, no email needed):**
+
+```bash
+npm run db:reset-password -- admin@portfolio.com "your-new-secure-password"
+```
+
+**Option C — Manual hash:**
+
+```bash
+node -e "const b = require('bcryptjs'); console.log(b.hashSync('new-password', 12))"
+# Paste the hash into admin_user.password_hash via `npm run db:studio`
 ```
 
 ### Session Configuration

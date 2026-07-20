@@ -33,6 +33,21 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the mobile menu whenever the route (or locale) changes.
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock background scroll while the mobile menu is open.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [mobileOpen]);
+
   const handleNavClick = (href: string) => {
     if (href.startsWith("#")) {
       const el = document.querySelector(href);
@@ -119,7 +134,19 @@ export function Navbar({ name, navItems = [] }: NavbarProps) {
         </div>
       </nav>
 
-      <div className={`md:hidden border-t border-slate-200/70 bg-white/90 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-950/90 transition-all duration-300 ${mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm md:hidden"
+          aria-hidden="true"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <div
+        className={`absolute top-full inset-x-0 z-50 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t border-slate-200/70 bg-white/95 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-950/95 transition-all duration-300 md:hidden ${
+          mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+        }`}
+      >
         <ul className="container-px py-3 space-y-0.5">
           {visibleNavItems.map((item) => {
             const itemHref = item.href.startsWith("/") ? `/${locale}${item.href}` : item.href;

@@ -1,14 +1,22 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { loginAction } from "../actions";
 import { useAdminTranslations } from "@/i18n/useAdminTranslations";
+import { locales, defaultLocale } from "@/i18n/config";
 
 function LoginForm() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+  const segments = pathname.split("/").filter(Boolean);
+  const locale =
+    segments[0] && locales.includes(segments[0] as typeof locales[number])
+      ? segments[0]
+      : defaultLocale;
+  const forgotHref = `/${locale}/admin/forgot-password`;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -55,17 +63,17 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                {t("login.email")}
+              <label htmlFor="identifier" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                {t("login.identifier")}
               </label>
               <input
-                id="email"
-                type="email"
+                id="identifier"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@portfolio.com"
+                placeholder="admin@portfolio.com or admin"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 disabled={loading}
                 className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-500 dark:focus:ring-white/10 transition-all duration-150 disabled:opacity-50"
               />
@@ -102,6 +110,15 @@ function LoginForm() {
                 t("login.submit")
               )}
             </button>
+
+            <div className="mt-4 text-center">
+              <a
+                href={forgotHref}
+                className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+              >
+                {t("login.forgotPassword")}
+              </a>
+            </div>
           </form>
         </div>
       </div>

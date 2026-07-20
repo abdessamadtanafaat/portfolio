@@ -11,11 +11,14 @@ import { sql } from "drizzle-orm";
 export const adminUser = sqliteTable("admin_user", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   email: text("email").notNull().unique(),
+  username: text("username").unique(),
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   createdAt: integer("created_at").notNull().default(sql`(unixepoch())`),
   updatedAt: integer("updated_at").notNull().default(sql`(unixepoch())`),
   lastLoginAt: integer("last_login_at"),
+  resetToken: text("reset_token"),
+  resetTokenExpiresAt: integer("reset_token_expires_at"),
 });
 
 export const personalInfo = sqliteTable("personal_info", {
