@@ -4,8 +4,6 @@ import { z } from "zod/v4";
 import { db } from "@/lib/db";
 import { contactMessages } from "@/lib/db/schema";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const contactSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   email: z.email("Format d'email invalide"),
@@ -19,6 +17,13 @@ function getSenderEmail(): string {
     return "Portfolio Contact <noreply@at.com>";
   }
   return "Portfolio Contact <onboarding@resend.dev>";
+}
+
+/** Lazy: Resend throws if constructed without a key (breaks `next build` / Docker with no secrets). */
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
 }
 
 export async function POST(request: Request) {
@@ -39,8 +44,9 @@ export async function POST(request: Request) {
     await db.insert(contactMessages).values({ name, email, subject, message }).run();
 
     const recipientEmail = process.env.CONTACT_EMAIL || process.env.ADMIN_EMAIL;
+    const resend = getResend();
 
-    if (!process.env.RESEND_API_KEY) {
+    if (!resend) {
       console.warn("[Contact] RESEND_API_KEY not set — message saved to DB but email not sent");
       return NextResponse.json({ success: true, message: "Message enregistré (email non configuré)" });
     }

@@ -1,0 +1,42 @@
+# Portfolio — production-like run
+#
+# 1. cp .env.docker.example .env.docker   # fill Turso + secrets
+# 2. From the host (once): load same Turso URL and run:
+#      npm run db:push && npm run db:seed
+# 3. docker compose up --build -d
+# 4. Open http://localhost:3000  (→ /en)
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    image: portfolio:local
+    container_name: portfolio
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    # Optional locally; on k3s use Secret/ConfigMap instead — do not bake secrets into the image.
+    env_file:
+      - path: .env.docker
+        required: false
+    environment:
+      NODE_ENV: production
+      HOSTNAME: "0.0.0.0"
+      PORT: "3000"
+      # next-auth v5 behind Docker / reverse proxies
+      AUTH_TRUST_HOST: "true"
+    volumes:
+      # Persist local libSQL file DB if TURSO_DATABASE_URL=file:/app/data/local.db
+      - portfolio_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/en"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+
+volumes:
+  portfolio_data:

@@ -34,6 +34,17 @@ Admin: `/en/admin/login` (email/password from `.env.local`, default `admin@portf
 | `npm run db:push` / `db:generate` / `db:migrate` / `db:studio` | Drizzle schema management |
 | `npm run db:seed` / `db:verify` | Seed / verify database |
 
+## Docker
+
+See [`docs/DOCKER.md`](docs/DOCKER.md). Short version:
+
+```bash
+cp .env.docker.example .env.docker   # set NEXTAUTH_* + TURSO_*
+npm run db:push && npm run db:seed   # once, against the same Turso DB
+docker compose up --build -d
+# http://localhost:3000/en
+```
+
 ## Deploy (free)
 
 See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for a full step-by-step guide using **Vercel + Turso + Resend** (all generous free tiers). Short version:

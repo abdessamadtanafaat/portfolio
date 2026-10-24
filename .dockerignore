@@ -1,0 +1,42 @@
+# Git / IDE
+.git
+.gitignore
+.DS_Store
+**/.DS_Store
+.vscode
+.idea
+
+# Dependencies & build (rebuilt in image)
+node_modules
+.next
+out
+build
+coverage
+*.tsbuildinfo
+
+# Local secrets & DBs — inject via Compose env_file / runtime env
+.env
+.env.*
+!.env.docker.example
+!.env.example
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+local.db*
+
+# Tests & docs (not needed at runtime)
+__tests__
+docs
+playwright-report
+test-results
+*.md
+!README.md
+
+# Misc
+inwimoney.ma-*.html
+.vercel
+.turbo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -5,6 +5,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Required for the production Docker image (copies `.next/standalone`).
+  output: "standalone",
   turbopack: {
     root: path.resolve(__dirname),
   },

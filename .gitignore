@@ -27,6 +27,10 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.docker
+.env
+!.env.example
+!.env.docker.example
 
 # local databases (development only — never commit)
 *.db
