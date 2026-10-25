@@ -71,25 +71,42 @@ pipeline {
 
     stage('Push') {
       steps {
-        sh """
-          set -eux
-          docker push '${env.IMAGE_REF}'
-          DIGEST=\$(docker image inspect '${env.IMAGE_REF}' --format '{{index .RepoDigests 0}}')
-          echo "DIGEST=\${DIGEST}"
-          {
-            echo "IMAGE=${env.IMAGE_REF}"
-            echo "IMAGE_NAME=${params.IMAGE_NAME}"
-            echo "REGISTRY=${params.REGISTRY}"
-            echo "SHA=${env.GIT_SHA}"
-            echo "SHA_FULL=${env.GIT_SHA_FULL}"
-            echo "DIGEST=\${DIGEST}"
-            echo "NEXT_PUBLIC_SITE_URL=${params.NEXT_PUBLIC_SITE_URL}"
-          } > "${IMAGE_ENV_FILE}"
-          cat "${IMAGE_ENV_FILE}"
-        """
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'registry-credentials',
+            usernameVariable: 'REGISTRY_USER',
+            passwordVariable: 'REGISTRY_PASSWORD'
+          )
+        ]) {
+          sh '''
+            set -eu
+
+            echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY" \
+              --username "$REGISTRY_USER" \
+              --password-stdin
+
+            docker push "$IMAGE_REF"
+
+            DIGEST=$(docker image inspect "$IMAGE_REF" \
+              --format '{{index .RepoDigests 0}}')
+
+            {
+              echo "IMAGE=$IMAGE_REF"
+              echo "IMAGE_NAME=$IMAGE_NAME"
+              echo "REGISTRY=$REGISTRY"
+              echo "SHA=$GIT_SHA"
+              echo "SHA_FULL=$GIT_SHA_FULL"
+              echo "DIGEST=$DIGEST"
+              echo "NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL"
+            } > "$IMAGE_ENV_FILE"
+
+            cat "$IMAGE_ENV_FILE"
+
+          '''
+        }
       }
     }
-  }
+
 
   post {
     success {
