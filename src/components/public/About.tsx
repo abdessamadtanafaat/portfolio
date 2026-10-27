@@ -6,7 +6,7 @@ import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import type { HomepageContent, Differentiator } from "@/lib/queries/portfolio";
-import { parseJsonObject } from "@/lib/queries/portfolio";
+import { parseJsonObject } from "@/lib/portfolio-format";
 import { useTranslations, type TranslationKey } from "@/i18n/useTranslations";
 import { SectionShell } from "@/components/public/SectionShell";
 import { SectionHeader } from "@/components/public/SectionHeader";

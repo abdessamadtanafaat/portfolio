@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, Award, MapPin, Calendar } from "lucide-react";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import type { Education, Certificate, HomepageContent } from "@/lib/queries/portfolio";
-import { formatEducationDate, tsToYear } from "@/lib/queries/portfolio";
+import { formatEducationDate, tsToYear } from "@/lib/portfolio-format";
 import { useTranslations } from "@/i18n/useTranslations";
 import { SectionShell } from "@/components/public/SectionShell";
 import { SectionHeader } from "@/components/public/SectionHeader";

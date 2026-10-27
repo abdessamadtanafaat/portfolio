@@ -7,7 +7,7 @@ import Link from "next/link";
 import { TiltCard } from "@/components/effects/TiltCard";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import type { Certificate, HomepageContent } from "@/lib/queries/portfolio";
-import { tsToYear, parseJsonArray } from "@/lib/queries/portfolio";
+import { tsToYear, parseJsonArray } from "@/lib/portfolio-format";
 import { useTranslations } from "@/i18n/useTranslations";
 import { SectionShell } from "@/components/public/SectionShell";
 import { SectionHeader } from "@/components/public/SectionHeader";

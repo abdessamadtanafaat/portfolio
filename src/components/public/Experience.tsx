@@ -4,7 +4,7 @@ import React from "react";
 import { ExternalLink } from "lucide-react";
 import { Linkedin } from "@/components/icons";
 import Link from "next/link";
-import { formatExperienceDate, parseJsonArray } from "@/lib/queries/portfolio";
+import { formatExperienceDate, parseJsonArray } from "@/lib/portfolio-format";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import type { Experience, HomepageContent, SocialLink } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";

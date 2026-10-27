@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Code, Award, Briefcase, GraduationCap, Shield, Rocket, Users, Lightbulb, Target, Heart, Zap, Star, ArrowRight } from "lucide-react";
 import type { CustomSection, CustomSectionItem } from "@/lib/queries/portfolio";
-import { parseJsonArray } from "@/lib/queries/portfolio";
+import { parseJsonArray } from "@/lib/portfolio-format";
 import { useTranslations } from "@/i18n/useTranslations";
 import { SectionShell } from "@/components/public/SectionShell";
 import { SectionHeader } from "@/components/public/SectionHeader";

@@ -5,7 +5,7 @@ import { Users } from "lucide-react";
 import { getIconComponent } from "@/components/admin/editors/IconPicker";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { TiltCard } from "@/components/effects/TiltCard";
-import { formatExperienceDate } from "@/lib/queries/portfolio";
+import { formatExperienceDate } from "@/lib/portfolio-format";
 import type { VolunteeringEntry, HomepageContent } from "@/lib/queries/portfolio";
 import { useTranslations } from "@/i18n/useTranslations";
 import { SectionShell } from "@/components/public/SectionShell";
