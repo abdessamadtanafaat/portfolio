@@ -23,6 +23,7 @@ import {
   softSkills,
 } from "@/lib/db/schema";
 import { eq, asc, and, or, ilike } from "drizzle-orm";
+import { withStaleCache } from "@/lib/db/read-cache";
 
 export type PersonalInfo = typeof personalInfo.$inferSelect;
 export type Project = typeof projects.$inferSelect;
@@ -78,7 +79,43 @@ export {
   parseJsonObject,
 } from "@/lib/portfolio-format";
 
+function attachTechnologies(
+  projectList: Project[],
+  allTechs: Technology[],
+  links: { projectId: number; technologyId: number }[],
+): ProjectWithTech[] {
+  const techById = new Map(allTechs.map((tech) => [tech.id, tech]));
+  const idsByProject = new Map<number, number[]>();
+
+  for (const link of links) {
+    const ids = idsByProject.get(link.projectId) ?? [];
+    ids.push(link.technologyId);
+    idsByProject.set(link.projectId, ids);
+  }
+
+  return projectList.map((project) => ({
+    ...project,
+    technologies: (idsByProject.get(project.id) ?? [])
+      .map((id) => techById.get(id))
+      .filter((tech): tech is Technology => Boolean(tech)),
+  }));
+}
+
+async function loadTechnologyLinks() {
+  return db
+    .select({
+      projectId: projectTechnologies.projectId,
+      technologyId: projectTechnologies.technologyId,
+    })
+    .from(projectTechnologies)
+    .all();
+}
+
 export async function getSeoForPage(pagePath: string, locale: string = "en"): Promise<SeoSetting | null> {
+  return withStaleCache(`seo:${pagePath}:${locale}`, () => loadSeoForPage(pagePath, locale));
+}
+
+async function loadSeoForPage(pagePath: string, locale: string = "en"): Promise<SeoSetting | null> {
   const result = await db
     .select()
     .from(seoSettings)
@@ -125,6 +162,10 @@ async function getSingletonWithFallback<T extends { locale: string }>(
 }
 
 export async function getPortfolioData(locale: string = "en"): Promise<PortfolioData> {
+  return withStaleCache(`portfolio:${locale}`, () => loadPortfolioData(locale));
+}
+
+async function loadPortfolioData(locale: string = "en"): Promise<PortfolioData> {
   const [
     personal,
     allProjects,
@@ -145,6 +186,7 @@ export async function getPortfolioData(locale: string = "en"): Promise<Portfolio
     allLanguages,
     allVolunteering,
     allSoftSkills,
+    techLinks,
   ] = await Promise.all([
     getSingletonWithFallback<PersonalInfo>(personalInfo, locale),
     getWithFallback<Project>(projects, locale, asc(projects.orderIndex)),
@@ -165,30 +207,10 @@ export async function getPortfolioData(locale: string = "en"): Promise<Portfolio
     getWithFallback<Language>(languages, locale, asc(languages.orderIndex)),
     getWithFallback<VolunteeringEntry>(volunteering, locale, asc(volunteering.orderIndex)),
     getWithFallback<SoftSkill>(softSkills, locale, asc(softSkills.orderIndex)),
+    loadTechnologyLinks(),
   ]);
 
-  const projectsWithTech: ProjectWithTech[] = await Promise.all(
-    allProjects.map(async (project) => {
-      const techLinks = await db
-        .select({ technologyId: projectTechnologies.technologyId })
-        .from(projectTechnologies)
-        .where(eq(projectTechnologies.projectId, project.id))
-        .all();
-
-      const techs = await Promise.all(
-        techLinks.map(async (link) => {
-          const tech = await db
-            .select()
-            .from(technologies)
-            .where(eq(technologies.id, link.technologyId))
-            .get();
-          return tech!;
-        })
-      );
-
-      return { ...project, technologies: techs.filter(Boolean) };
-    })
-  );
+  const projectsWithTech = attachTechnologies(allProjects, allTechs, techLinks);
 
   const customSectionsWithItems = allCustomSections
     .filter((s) => s.visible)
@@ -223,53 +245,31 @@ export async function getPortfolioData(locale: string = "en"): Promise<Portfolio
 }
 
 export async function getProjectsForPage(locale: string = "en"): Promise<ProjectWithTech[]> {
-  const allProjects = await getWithFallback<Project>(projects, locale, asc(projects.orderIndex));
+  return withStaleCache(`projects:${locale}`, () => loadProjectsForPage(locale));
+}
 
-  const projectsWithTech: ProjectWithTech[] = await Promise.all(
-    allProjects.map(async (project) => {
-      const techLinks = await db
-        .select({ technologyId: projectTechnologies.technologyId })
-        .from(projectTechnologies)
-        .where(eq(projectTechnologies.projectId, project.id))
-        .all();
+async function loadProjectsForPage(locale: string = "en"): Promise<ProjectWithTech[]> {
+  const [allProjects, allTechs, techLinks] = await Promise.all([
+    getWithFallback<Project>(projects, locale, asc(projects.orderIndex)),
+    db.select().from(technologies).orderBy(asc(technologies.category), asc(technologies.name)).all(),
+    loadTechnologyLinks(),
+  ]);
 
-      const techs = await Promise.all(
-        techLinks.map(async (link) => {
-          const tech = await db
-            .select()
-            .from(technologies)
-            .where(eq(technologies.id, link.technologyId))
-            .get();
-          return tech!;
-        })
-      );
-
-      return { ...project, technologies: techs.filter(Boolean) };
-    })
-  );
-
-  return projectsWithTech;
+  return attachTechnologies(allProjects, allTechs, techLinks);
 }
 
 export async function getProjectBySlug(slug: string, locale: string = "en"): Promise<ProjectWithTech | null> {
-  const allProjects = await getWithFallback<Project>(projects, locale, asc(projects.orderIndex));
-  const project = allProjects.find((p) => p.slug === slug);
+  return withStaleCache(`project:${locale}:${slug}`, () => loadProjectBySlug(slug, locale));
+}
+
+async function loadProjectBySlug(slug: string, locale: string = "en"): Promise<ProjectWithTech | null> {
+  const [allProjects, allTechs, techLinks] = await Promise.all([
+    getWithFallback<Project>(projects, locale, asc(projects.orderIndex)),
+    db.select().from(technologies).orderBy(asc(technologies.category), asc(technologies.name)).all(),
+    loadTechnologyLinks(),
+  ]);
+  const project = allProjects.find((item) => item.slug === slug);
   if (!project) return null;
 
-  const techLinks = await db
-    .select({ technologyId: projectTechnologies.technologyId })
-    .from(projectTechnologies)
-    .where(eq(projectTechnologies.projectId, project.id))
-    .all();
-
-  const techIds = techLinks.map((l) => l.technologyId);
-  const techs = techIds.length
-    ? await db.select().from(technologies).where(
-        techIds.length === 1
-          ? eq(technologies.id, techIds[0])
-          : undefined
-      )
-    : [];
-
-  return { ...project, technologies: techs.filter(Boolean) };
+  return attachTechnologies([project], allTechs, techLinks)[0] ?? null;
 }
